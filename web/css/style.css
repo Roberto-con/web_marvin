@@ -1,0 +1,120 @@
+/* Fuente y fondo general */
+body {
+    background-color: #f4f8fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Contenedor general */
+.container {
+    width: 100%;
+    padding: 20px 40px;
+    box-sizing: border-box;
+}
+/* Titulares */
+h1, h2, h3 {
+    color: #004AAD;
+    font-weight: 700;
+}
+
+/* Navegación */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #004AAD;
+}
+
+.nav-link {
+    color: #333 !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #004AAD !important;
+}
+
+/* Botones personalizados */
+.btn-primary {
+    background-color: #004AAD;
+    border-color: #004AAD;
+}
+
+.btn-primary:hover {
+    background-color: #00337f;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Tablas y tarjetas */
+.table {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card-img-top {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    object-fit: cover;
+}
+
+/* Toast */
+.toast {
+    z-index: 2000;
+}
+
+/* Formularios */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="file"],
+select {
+    border-radius: 8px;
+}
+
+/* Tablas de carrito/pedidos */
+.table th, .table td {
+    vertical-align: middle !important;
+    text-align: center;
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.product-card {
+    height: 100%;
+}

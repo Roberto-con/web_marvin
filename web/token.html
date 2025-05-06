@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Token de Invitado</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        #reloj {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004AAD;
+        }
+    </style>
+</head>
+<body class="p-4">
+<div class="container">
+    <h2 class="mb-4">Token actual para invitados</h2>
+    <div class="alert alert-primary">
+        <strong id="token-valor">Cargando...</strong>
+    </div>
+    <p class="text-muted">Este token se actualiza automáticamente cada 45 minutos. Puedes compartirlo con tus clientes.</p>
+    <p><strong>Tiempo restante:</strong> <span id="reloj">00:00</span></p>
+    <a href="productos.html" class="btn btn-outline-primary">Volver a productos</a>
+</div>
+<script>
+    let tiempoRestante = 0;
+
+    function iniciarTemporizador() {
+        const reloj = document.getElementById("reloj");
+        const interval = setInterval(() => {
+            const minutos = Math.floor(tiempoRestante / 60);
+            const segundos = tiempoRestante % 60;
+            reloj.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            tiempoRestante--;
+            if (tiempoRestante < 0) {
+                clearInterval(interval);
+                reloj.textContent = "Generando nuevo token...";
+                obtenerNuevoToken();
+            }
+        }, 1000);
+    }
+
+    function obtenerNuevoToken() {
+        fetch("/api/token", {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("token-valor").textContent = data.token;
+            tiempoRestante = data.restante || 2700;
+            iniciarTemporizador();
+        })
+        .catch(() => {
+            document.getElementById("token-valor").textContent = "Error al obtener el token";
+        });
+    }
+
+    obtenerNuevoToken();
+</script>
+<script src="js/session.js"></script>
+</body>
+</html>

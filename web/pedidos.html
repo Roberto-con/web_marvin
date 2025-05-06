@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <title>Pedidos Realizados - Delizia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: #004AAD;
+        }
+        .table th {
+            background-color: #004AAD;
+            color: white;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+    <script>
+        const rol = localStorage.getItem("rol");
+        if (rol !== "admin") {
+            alert("Acceso denegado");
+            window.location.href = "index.html";
+        }
+
+        // Prevenir navegación atrás después de cerrar sesión
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || performance.navigation.type === 2) {
+                if (!localStorage.getItem("token")) {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4 text-center">📦 Pedidos Realizados</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-pedidos">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        fetch("/api/pedidos", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Error al obtener los pedidos");
+            }
+            return res.json();
+        })
+        .then(pedidos => {
+            const tbody = document.getElementById("tabla-pedidos");
+            pedidos.forEach((pedido, index) => {
+                const fila = document.createElement("tr");
+                const productosTexto = JSON.parse(pedido.productos_json)
+                    .map(p => `📌 <strong>${p.nombre}</strong> — ${p.cantidad} und. — ${p.precio} Bs`)
+                    .join("<br>");
+                fila.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="text-start">${productosTexto}</td>
+                    <td><strong>${pedido.total} Bs</strong></td>
+                `;
+                tbody.appendChild(fila);
+            });
+        })
+        .catch(err => {
+            document.getElementById("tabla-pedidos").innerHTML = `
+                <tr><td colspan="3" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
+            `;
+            console.error(err);
+        });
+    </script>
+    <script src="js/session.js"></script>
+</body>
+</html>
