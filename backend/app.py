@@ -28,6 +28,7 @@ CORS(app)
 def get_db_connection():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
+        port=int(os.getenv("DB_PORT")),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME")
@@ -302,5 +303,13 @@ def cambiar_contrasena():
 
     return jsonify({"mensaje": "Credenciales actualizadas correctamente"})
 
+
 if __name__ == '__main__':
+    try:
+        conn = get_db_connection()
+        print("✅ Conectado correctamente a Railway.")
+        conn.close()
+    except Exception as e:
+        print("❌ Error de conexión:", e)
+
     app.run(debug=True)
