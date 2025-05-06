@@ -3,7 +3,7 @@ services:
     name: web-marvin
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    startCommand: "gunicorn backend.app:app"
     envVars:
       - key: DB_HOST
         value: tramway.proxy.rlwy.net
