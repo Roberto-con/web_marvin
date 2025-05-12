@@ -138,15 +138,17 @@ function enviarPedido() {
     const nombre_cliente = document.getElementById("nombreCliente")?.value || "";
     const telefono_cliente = document.getElementById("telefonoCliente")?.value || "";
 
-    const mensaje = " *Nuevo pedido desde la página web*
+const mensaje = `📦 *Nuevo pedido desde la página web*
 
-" +
-        " Productos:
-" +
-        carrito.map(p =>
-            `• ${p.nombre} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
-        ).join("\n") +
-        `\n\n Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}\n📞 Tel: ${telefono_cliente}\n✅ Por favor, confirma este pedido.`;
+🛒 Productos:
+${carrito.map(p =>
+    `• ${p.nombre} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
+).join("\n")}
+
+💵 Total: ${total.toFixed(2)} Bs
+👤 Cliente: ${nombre_cliente}
+📞 Tel: ${telefono_cliente}
+✅ Por favor, confirma este pedido.`;
 
     const urlWhatsApp = "https://wa.me/59171016195?text=" + encodeURIComponent(mensaje);
 
