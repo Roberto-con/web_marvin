@@ -114,34 +114,6 @@ select {
     grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
     gap: 1rem;
 }
-
-@media (max-width: 991px) {
-    .product-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columnas solo en móviles/tablets */
-    }
-
-    .product-card {
-        margin-bottom: 0.5rem;
-    }
-
-    .card-img-top {
-        height: 90px;
-    }
-
-    .card-title {
-        font-size: 0.8rem;
-    }
-
-    .card-text {
-        font-size: 0.7rem;
-    }
-
-    .btn {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-    }
-}
-
 .product-card {
     height: 100%;
     display: flex;
@@ -171,4 +143,33 @@ select {
 .btn {
     font-size: clamp(0.65rem, 0.9vw, 0.85rem);
     padding: 4px 8px;
+}
+@media (max-width: 991px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas solo en móviles/tablets */
+    }
+
+    .product-card {
+        margin-bottom: 0.5rem;
+    }
+    .card {
+        max-height: 300px; /* o ajusta según preferencia */
+        overflow: hidden;
+    }
+    .card-img-top {
+        height: 90px;
+    }
+
+    .card-title {
+        font-size: 0.8rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
+    }
+
+    .btn {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
 }
