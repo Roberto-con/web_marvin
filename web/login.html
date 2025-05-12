@@ -37,7 +37,8 @@
         <form id="login-form">
             <div class="mb-3 text-start">
                 <label for="usuario" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="usuario" placeholder="invitado" required>
+                <input type="text" class="form-control" id="usuario" placeholder="Dejar vacío si eres invitado">
+                <small class="form-text text-muted">Puedes dejarlo vacío si eres invitado</small>
             </div>
             <div class="mb-3 text-start">
                 <label for="contrasena" class="form-label">Contraseña</label>
@@ -54,8 +55,8 @@
             const usuario = document.getElementById("usuario").value.trim();
             const contrasena = document.getElementById("contrasena").value.trim();
 
-            if (!usuario || !contrasena) {
-                alert("Por favor completa todos los campos.");
+            if (!contrasena) {
+                alert("Por favor ingresa la contraseña o token.");
                 return;
             }
 
