@@ -115,7 +115,7 @@ select {
     gap: 1rem;
 }
 
-@media (max-width: 1090px) {
+@media (max-width: 1920px) {
     .product-grid {
         grid-template-columns: repeat(3, 1fr);
     }
