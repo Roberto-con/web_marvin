@@ -111,7 +111,7 @@ select {
 }
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(180, 1fr));
+    grid-template-columns: repeat(4, minmax(60, 1fr));
     gap: 20px;
 }
 }.product-card {
