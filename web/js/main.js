@@ -83,7 +83,7 @@ function agregarAlCarrito(id, nombre, precio) {
 function actualizarContadorCarrito() {
     const carrito = obtenerCarrito();
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-    const contador = document.getElementById("carrito-contador");
+    const contador = document.getElementById("contador-carrito");
     if (contador) {
         contador.textContent = totalItems;
         contador.style.display = totalItems > 0 ? "inline-block" : "none";
