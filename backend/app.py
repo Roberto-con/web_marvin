@@ -60,7 +60,7 @@ def login():
     usuario = data.get("usuario")
     contrasena = data.get("contrasena")
 
-    if usuario == "invitado":
+    if usuario == "invitado" or (not usuario and contrasena):
         try:
             with open("token_invitado.json", "r") as f:
                 token_data = json.load(f)
@@ -305,6 +305,22 @@ def cambiar_contrasena():
     conn.close()
 
     return jsonify({"mensaje": "Credenciales actualizadas correctamente"})
+
+@app.route('/api/limpiar_pedidos', methods=['DELETE'])
+def limpiar_pedidos():
+    datos = verificar_token_admin()
+    if not datos:
+        return jsonify({"mensaje": "No autorizado"}), 403
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM pedidos")
+        conn.commit()
+        conn.close()
+        return jsonify({"mensaje": "Todos los pedidos han sido eliminados"}), 200
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al eliminar pedidos: {str(e)}"}), 500
 
 
 if __name__ == '__main__':

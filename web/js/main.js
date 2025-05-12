@@ -1,3 +1,4 @@
+
 // Obtener productos desde Flask API
 if (document.getElementById("product-list")) {
     fetch("/api/productos")
@@ -76,7 +77,21 @@ function agregarAlCarrito(id, nombre, precio) {
     }
     guardarCarrito(carrito);
     mostrarToast("Producto agregado al carrito");
+    actualizarContadorCarrito();
 }
+
+function actualizarContadorCarrito() {
+    const carrito = obtenerCarrito();
+    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    const contador = document.getElementById("carrito-contador");
+    if (contador) {
+        contador.textContent = totalItems;
+        contador.style.display = totalItems > 0 ? "inline-block" : "none";
+    }
+}
+
+// Ejecutar al cargar
+actualizarContadorCarrito();
 
 // Mostrar carrito
 if (document.getElementById("carrito-lista")) {
@@ -120,22 +135,18 @@ function enviarPedido() {
     if (carrito.length === 0) return;
 
     const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+    const nombre_cliente = document.getElementById("nombreCliente")?.value || "";
+    const telefono_cliente = document.getElementById("telefonoCliente")?.value || "";
 
-    const nombreCliente = document.getElementById("nombreCliente").value.trim();
-    const telefonoCliente = document.getElementById("telefonoCliente").value.trim();
+    const mensaje = " *Nuevo pedido desde la página web*
 
-    if (!nombreCliente || !telefonoCliente) {
-        alert("Por favor, completa tu nombre y teléfono antes de enviar el pedido.");
-        return;
-    }
-
-    const mensaje = "\uD83D\uDCE6 *Nuevo pedido desde la página web*\n\n" +
-        `🙍 Cliente: ${nombreCliente}\n📞 Teléfono: ${telefonoCliente}\n\n` +
-        "\uD83D\uDED2 Productos:\n" +
+" +
+        " Productos:
+" +
         carrito.map(p =>
             `• ${p.nombre} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
         ).join("\n") +
-        `\n\n\uD83D\uDCB0 Total a pagar: ${total.toFixed(2)} Bs\n\n\u2705 Por favor, confirma este pedido.`;
+        `\n\n Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}\n📞 Tel: ${telefono_cliente}\n✅ Por favor, confirma este pedido.`;
 
     const urlWhatsApp = "https://wa.me/59171016195?text=" + encodeURIComponent(mensaje);
 
@@ -145,8 +156,8 @@ function enviarPedido() {
         body: JSON.stringify({
             productos: carrito,
             total: total.toFixed(2),
-            nombre_cliente: nombreCliente,
-            telefono_cliente: telefonoCliente
+            nombre_cliente,
+            telefono_cliente
         })
     })
     .then(res => res.json())
@@ -176,4 +187,11 @@ if (document.getElementById("busqueda")) {
             card.style.display = coincide ? "block" : "none";
         });
     });
+}
+
+function vaciarCarrito() {
+    if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
+        localStorage.removeItem("carrito");
+        location.reload();
+    }
 }

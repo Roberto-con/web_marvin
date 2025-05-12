@@ -76,7 +76,14 @@
     </button>
     <div class="collapse navbar-collapse" id="menuOpciones">
         <div class="d-flex flex-wrap gap-2 justify-content-end px-2 w-100">
-            <a class="btn btn-outline-primary" href="productos.html">Productos</a>
+            <div class="position-relative">
+              <a class="btn btn-outline-primary" href="carrito.html">
+                Carrito
+                <span id="contador-carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                  0
+                </span>
+              </a>
+            </div>
             <a class="btn btn-outline-primary" href="carrito.html">Carrito</a>
             <a class="btn btn-primary" id="btn-agregar-producto" style="display: none;" href="agregar_producto.html">+ Agregar Producto</a>
             <a class="btn btn-outline-primary" id="btn-pedidos" style="display: none;" href="pedidos.html">📦 Pedidos</a>
