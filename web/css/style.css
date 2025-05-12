@@ -109,61 +109,66 @@ select {
     vertical-align: middle !important;
     text-align: center;
 }
-/* GRID GENERAL DE PRODUCTOS: 4 columnas por defecto (pantallas grandes) */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual ancho */
-    gap: 1rem; /* Espacio entre columnas y filas */
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas para escritorio */
+    gap: 1rem;
 }
 
-/* MEDIA QUERY PARA PANTALLAS HASTA 1080px (efecto aplicado a móviles/tablets y pantallas más pequeñas) */
-@media (max-width: 1080px) {
+@media (max-width: 991px) {
     .product-grid {
-        grid-template-columns: repeat(3, 1fr); /* Cambia a 3 columnas */
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas solo en móviles/tablets */
     }
 
     .product-card {
-        margin-bottom: 0.5rem; /* Espacio inferior reducido entre tarjetas */
+        margin-bottom: 0.5rem;
     }
 
     .card-img-top {
-        height: 90px; /* Imagen más pequeña para reducir altura en pantallas pequeñas */
+        height: 90px;
+    }
+
+    .card-title {
+        font-size: 0.8rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
+    }
+
+    .btn {
+        font-size: 0.7rem;
+        padding: 2px 6px;
     }
 }
 
-/* TARJETA INDIVIDUAL DE PRODUCTO */
 .product-card {
     height: 100%;
-    display: flex; /* Permite estirarse completamente si es necesario */
+    display: flex;
 }
 
-/* ESTILO GENERAL DE CADA TARJETA (estructura vertical) */
 .card {
     display: flex;
-    flex-direction: column; /* Contenido apilado verticalmente */
-    justify-content: space-between; /* Distribuye los elementos con espacio entre ellos */
-    height: 90%;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
-/* IMAGEN DEL PRODUCTO: para escritorio */
 .card-img-top {
-    object-fit: cover; /* Asegura que la imagen mantenga proporciones sin deformarse */
-    height: 350px; /* Altura definida para escritorio */
+    object-fit: cover;
+    height: 350px; /* para escritorio */
 }
 
-/* TÍTULO DEL PRODUCTO: tamaño adaptativo */
 .card-title {
     font-weight: bold;
-    font-size: clamp(0.8rem, 1vw, 1rem); /* Escala el texto según el ancho de la pantalla */
+    font-size: clamp(0.8rem, 1vw, 1rem);
 }
 
-/* TEXTO DESCRIPTIVO: precio, etc. */
 .card-text {
-    font-size: clamp(0.7rem, 0.9vw, 0.85rem); /* Tamaño adaptativo */
+    font-size: clamp(0.7rem, 0.9vw, 0.85rem);
 }
 
-/* BOTÓN: estilo compacto y responsivo */
 .btn {
-    font-size: clamp(0.65rem, 0.9vw, 0.85rem); /* Tamaño de texto adaptativo */
-    padding: 4px 8px; /* Padding reducido para botones pequeños */
+    font-size: clamp(0.65rem, 0.9vw, 0.85rem);
+    padding: 4px 8px;
 }
