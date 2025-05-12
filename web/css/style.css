@@ -117,3 +117,15 @@ select {
 }.product-card {
     height: 100%;
 }
+.card-title {
+    font-weight: bold;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+}
+
+.card-text {
+    font-size: clamp(0.9rem, 1.3vw, 1rem);
+}
+
+.btn {
+    font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+}
