@@ -106,11 +106,14 @@ def guardar_pedido():
     data = request.get_json()
     productos = data.get("productos")
     total = data.get("total")
+    nombre_cliente = data.get("nombre_cliente")
+    telefono_cliente = data.get("telefono_cliente")
+
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO pedidos (productos_json, total) VALUES (%s, %s)",
-        (json.dumps(productos), total)
+        "INSERT INTO pedidos (productos_json, total, nombre_cliente, telefono_cliente) VALUES (%s, %s, %s, %s)",
+        (json.dumps(productos), total, nombre_cliente, telefono_cliente)
     )
     conn.commit()
     conn.close()
@@ -210,7 +213,7 @@ def obtener_pedidos():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT productos_json, total FROM pedidos")
+    cursor.execute("SELECT productos_json, total, nombre_cliente, telefono_cliente, fecha FROM pedidos ORDER BY fecha DESC")
     pedidos = cursor.fetchall()
     conn.close()
     return jsonify(pedidos)

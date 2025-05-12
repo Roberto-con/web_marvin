@@ -121,7 +121,16 @@ function enviarPedido() {
 
     const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
+    const nombreCliente = document.getElementById("nombreCliente").value.trim();
+    const telefonoCliente = document.getElementById("telefonoCliente").value.trim();
+
+    if (!nombreCliente || !telefonoCliente) {
+        alert("Por favor, completa tu nombre y teléfono antes de enviar el pedido.");
+        return;
+    }
+
     const mensaje = "\uD83D\uDCE6 *Nuevo pedido desde la página web*\n\n" +
+        `🙍 Cliente: ${nombreCliente}\n📞 Teléfono: ${telefonoCliente}\n\n` +
         "\uD83D\uDED2 Productos:\n" +
         carrito.map(p =>
             `• ${p.nombre} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
@@ -133,7 +142,12 @@ function enviarPedido() {
     fetch("/api/pedido", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productos: carrito, total: total.toFixed(2) })
+        body: JSON.stringify({
+            productos: carrito,
+            total: total.toFixed(2),
+            nombre_cliente: nombreCliente,
+            telefono_cliente: telefonoCliente
+        })
     })
     .then(res => res.json())
     .then(() => {

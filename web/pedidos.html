@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,7 +36,6 @@
             window.location.href = "index.html";
         }
 
-        // Prevenir navegación atrás después de cerrar sesión
         window.addEventListener("pageshow", function (event) {
             if (event.persisted || performance.navigation.type === 2) {
                 if (!localStorage.getItem("token")) {
@@ -55,6 +55,9 @@
                         <th>#</th>
                         <th>Productos</th>
                         <th>Total</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-pedidos">
@@ -71,9 +74,7 @@
             }
         })
         .then(res => {
-            if (!res.ok) {
-                throw new Error("Error al obtener los pedidos");
-            }
+            if (!res.ok) throw new Error("Error al obtener los pedidos");
             return res.json();
         })
         .then(pedidos => {
@@ -87,13 +88,16 @@
                     <td>${index + 1}</td>
                     <td class="text-start">${productosTexto}</td>
                     <td><strong>${pedido.total} Bs</strong></td>
+                    <td>${pedido.nombre_cliente || "-"}</td>
+                    <td>${pedido.telefono_cliente || "-"}</td>
+                    <td>${new Date(pedido.fecha).toLocaleString()}</td>
                 `;
                 tbody.appendChild(fila);
             });
         })
         .catch(err => {
             document.getElementById("tabla-pedidos").innerHTML = `
-                <tr><td colspan="3" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
+                <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
             `;
             console.error(err);
         });
