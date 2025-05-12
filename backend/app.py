@@ -57,17 +57,17 @@ usuarios = {
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
-    usuario = data.get("usuario")
+    usuario = data.get("usuario", "").strip()
     contrasena = data.get("contrasena")
 
-    if usuario == "invitado" or (not usuario and contrasena):
+    if usuario == "invitado" or usuario == "":
         try:
             with open("token_invitado.json", "r") as f:
                 token_data = json.load(f)
                 if contrasena == token_data.get("token"):
                     rol = "invitado"
                     token = jwt.encode({
-                        "usuario": usuario,
+                        "usuario": "invitado",
                         "rol": rol,
                         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=3)
                     }, SECRET_KEY, algorithm="HS256")
