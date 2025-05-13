@@ -35,6 +35,7 @@ def get_db_connection():
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME")
+        buffered=True
     )
 
 def verificar_token_admin():
