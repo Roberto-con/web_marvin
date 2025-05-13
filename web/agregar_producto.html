@@ -73,6 +73,16 @@
                 <button type="submit" class="btn btn-success px-4">Agregar producto</button>
             </div>
         </form>
+        <hr class="my-4">
+        <h5 class="text-center">📥 Importar productos desde Excel</h5>
+        <form id="form-importar" enctype="multipart/form-data">
+          <div class="mb-3">
+            <input type="file" class="form-control" id="archivoExcel" accept=".xlsx" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Importar</button>
+          </div>
+        </form>
     </div>
 
     <script>
@@ -99,6 +109,37 @@
                 window.location.href = "productos.html";
             }
         });
+    </script>
+    <script>
+    document.getElementById("form-importar").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const archivo = document.getElementById("archivoExcel").files[0];
+        if (!archivo) {
+            alert("Por favor selecciona un archivo Excel (.xlsx)");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("archivo", archivo);
+
+        try {
+            const res = await fetch("/api/importar_productos", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+            alert(data.mensaje);
+            if (res.ok) {
+                window.location.reload(); // recarga para mostrar nuevos productos si quieres
+            }
+        } catch (err) {
+            alert("Error al subir el archivo");
+        }
+    });
     </script>
     <script src="js/session.js"></script>
 </body>

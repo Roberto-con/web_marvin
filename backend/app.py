@@ -1,6 +1,8 @@
 
 from flask import Flask, jsonify, request, send_from_directory
 import mysql.connector
+import pandas as pd
+import io
 import bcrypt
 import os
 import jwt
@@ -322,6 +324,55 @@ def limpiar_pedidos():
     except Exception as e:
         return jsonify({"mensaje": f"Error al eliminar pedidos: {str(e)}"}), 500
 
+@app.route('/api/importar_productos', methods=['POST'])
+@token_requerido
+def importar_productos(usuario_data):
+    if usuario_data["rol"] != "admin":
+        return jsonify({"mensaje": "Acceso no autorizado"}), 403
+
+    archivo = request.files.get("archivo")
+    if not archivo:
+        return jsonify({"mensaje": "Archivo no recibido"}), 400
+
+    try:
+        # Leer archivo Excel desde memoria
+        df = pd.read_excel(archivo, engine="openpyxl")
+
+        # Validar columnas esperadas
+        columnas_esperadas = {"codigo", "nombre", "precio", "disponible", "imagen_url"}
+        if not columnas_esperadas.issubset(df.columns):
+            return jsonify({"mensaje": "Formato de archivo incorrecto. Faltan columnas."}), 400
+
+        # Validar campos obligatorios
+        for index, row in df.iterrows():
+            if pd.isna(row["nombre"]) or pd.isna(row["imagen_url"]) or pd.isna(row["disponible"]):
+                return jsonify({"mensaje": f"Faltan datos obligatorios en la fila {index + 2}"}), 400
+
+        # Insertar en la base de datos
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        for _, row in df.iterrows():
+            cursor.execute(
+                """
+                INSERT INTO productos (codigo, nombre, precio, disponible, imagen_url)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (
+                    row.get("codigo") or None,
+                    row["nombre"],
+                    row.get("precio") or 0.00,
+                    bool(row["disponible"]),
+                    row["imagen_url"]
+                )
+            )
+
+        conn.commit()
+        conn.close()
+        return jsonify({"mensaje": "Productos importados correctamente"}), 200
+
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
 
 if __name__ == '__main__':
     try:
