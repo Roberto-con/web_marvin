@@ -14,6 +14,8 @@ from werkzeug.utils import secure_filename
 import random
 import string
 import threading
+from functools import wraps
+
 
 load_dotenv()
 
@@ -58,7 +60,6 @@ usuarios = {
 
 @app.route('/api/login', methods=['POST'])
 
-from functools import wraps
 
 def token_requerido(f):
     @wraps(f)
