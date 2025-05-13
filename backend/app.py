@@ -15,6 +15,8 @@ import random
 import string
 import threading
 from functools import wraps
+from flask import send_file
+import tempfile
 
 load_dotenv()
 
@@ -410,6 +412,36 @@ def importar_productos(usuario_data):
 
     except Exception as e:
         return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
+
+@app.route('/api/exportar_productos', methods=['GET'])
+@token_requerido
+def exportar_productos(usuario_data):
+    if usuario_data['rol'] != 'admin':
+        return jsonify({"mensaje": "Acceso no autorizado"}), 403
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT codigo, nombre, precio, tipo, sabor, cantidad, imagen_url FROM productos")
+        productos = cursor.fetchall()
+        conn.close()
+
+        df = pd.DataFrame(productos)
+
+        # Crear archivo temporal Excel
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:
+            df.to_excel(tmp.name, index=False, engine="openpyxl")
+            tmp.seek(0)
+            return send_file(
+                tmp.name,
+                as_attachment=True,
+                download_name="productos_exportados.xlsx",
+                mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al exportar productos: {str(e)}"}), 500
+
 
 if __name__ == '__main__':
     try:
