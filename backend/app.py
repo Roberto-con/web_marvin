@@ -364,35 +364,51 @@ def importar_productos(usuario_data):
             if pd.isna(row["nombre"]):
                 return jsonify({"mensaje": f"Falta el nombre en la fila {index + 2}"}), 400
 
-        # Conexión a base de datos
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Insertar productos
         for _, row in df.iterrows():
-            cursor.execute(
-                """
-                INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """,
-(
-    row["codigo"] if pd.notna(row.get("codigo")) else None,
-    row["nombre"],
-    row["precio"] if pd.notna(row.get("precio")) else 0.00,
-    row["tipo"] if pd.notna(row.get("tipo")) else "",
-    row["sabor"] if pd.notna(row.get("sabor")) else "",
-    row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
-    row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
-)
+            nombre = row["nombre"]
+
+            # Verificar si ya existe un producto con el mismo nombre
+            cursor.execute("SELECT id FROM productos WHERE nombre = %s", (nombre,))
+            producto_existente = cursor.fetchone()
+
+            datos = (
+                row["codigo"] if pd.notna(row.get("codigo")) else None,
+                nombre,
+                row["precio"] if pd.notna(row.get("precio")) else 0.00,
+                row["tipo"] if pd.notna(row.get("tipo")) else "",
+                row["sabor"] if pd.notna(row.get("sabor")) else "",
+                row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
+                row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
             )
+
+            if producto_existente:
+                # Actualizar
+                cursor.execute("""
+                    UPDATE productos
+                    SET codigo = %s,
+                        precio = %s,
+                        tipo = %s,
+                        sabor = %s,
+                        cantidad = %s,
+                        imagen_url = %s
+                    WHERE nombre = %s
+                """, (datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], nombre))
+            else:
+                # Insertar nuevo
+                cursor.execute("""
+                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, datos)
 
         conn.commit()
         conn.close()
-        return jsonify({"mensaje": "Productos importados correctamente"}), 200
+        return jsonify({"mensaje": "Productos importados y actualizados correctamente"}), 200
 
     except Exception as e:
         return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
-
 
 if __name__ == '__main__':
     try:
