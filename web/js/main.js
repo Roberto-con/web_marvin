@@ -33,7 +33,7 @@ function mostrarProductos(productos) {
 
         card.innerHTML = `
             <div class="card h-100">
-                <img src="${prod.imagen_url}" class="card-img-top" alt="${prod.nombre}">
+                <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <h5 class="card-title">${prod.nombre}</h5>
                     <p class="card-text">Precio: ${prod.precio} Bs</p>
