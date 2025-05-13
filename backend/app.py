@@ -339,31 +339,34 @@ def importar_productos(usuario_data):
         df = pd.read_excel(archivo, engine="openpyxl")
 
         # Validar columnas esperadas
-        columnas_esperadas = {"codigo", "nombre", "precio", "disponible", "imagen_url"}
+        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url"}
         if not columnas_esperadas.issubset(df.columns):
-            return jsonify({"mensaje": "Formato de archivo incorrecto. Faltan columnas."}), 400
+            return jsonify({"mensaje": "Formato incorrecto. Verifica los encabezados de las columnas."}), 400
 
-        # Validar campos obligatorios
+        # Validar campos obligatorios por fila (solo 'nombre' es requerido)
         for index, row in df.iterrows():
-            if pd.isna(row["nombre"]) or pd.isna(row["imagen_url"]) or pd.isna(row["disponible"]):
-                return jsonify({"mensaje": f"Faltan datos obligatorios en la fila {index + 2}"}), 400
+            if pd.isna(row["nombre"]):
+                return jsonify({"mensaje": f"Falta el nombre en la fila {index + 2}"}), 400
 
-        # Insertar en la base de datos
+        # Conexión a base de datos
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        # Insertar productos
         for _, row in df.iterrows():
             cursor.execute(
                 """
-                INSERT INTO productos (codigo, nombre, precio, disponible, imagen_url)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     row.get("codigo") or None,
                     row["nombre"],
                     row.get("precio") or 0.00,
-                    bool(row["disponible"]),
-                    row["imagen_url"]
+                    row.get("tipo") or "",
+                    row.get("sabor") or "",
+                    row.get("cantidad") or 0,
+                    row.get("imagen_url") or ""
                 )
             )
 
@@ -373,6 +376,7 @@ def importar_productos(usuario_data):
 
     except Exception as e:
         return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
+
 
 if __name__ == '__main__':
     try:
