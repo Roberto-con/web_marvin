@@ -375,15 +375,15 @@ def importar_productos(usuario_data):
                 INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
-                (
-                    row.get("codigo") or None,
-                    row["nombre"],
-                    row.get("precio") or 0.00,
-                    row.get("tipo") or "",
-                    row.get("sabor") or "",
-                    row.get("cantidad") or 0,
-                    row.get("imagen_url") or ""
-                )
+(
+    row["codigo"] if pd.notna(row.get("codigo")) else None,
+    row["nombre"],
+    row["precio"] if pd.notna(row.get("precio")) else 0.00,
+    row["tipo"] if pd.notna(row.get("tipo")) else "",
+    row["sabor"] if pd.notna(row.get("sabor")) else "",
+    row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
+    row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
+)
             )
 
         conn.commit()
