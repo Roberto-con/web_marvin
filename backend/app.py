@@ -56,10 +56,6 @@ usuarios = {
     "admin": {"password": "admin123", "rol": "admin"}
 }
 
-
-@app.route('/api/login', methods=['POST'])
-
-
 def token_requerido(f):
     @wraps(f)
     def decorador(*args, **kwargs):
@@ -74,6 +70,8 @@ def token_requerido(f):
             return jsonify({"mensaje": "Token inválido"}), 403
         return f(datos, *args, **kwargs)
     return decorador
+
+@app.route('/api/login', methods=['POST'])
 
 def login():
     data = request.get_json()
