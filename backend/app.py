@@ -442,6 +442,9 @@ def exportar_productos(usuario_data):
     except Exception as e:
         return jsonify({"mensaje": f"Error al exportar productos: {str(e)}"}), 500
 
+@app.route('/api/imagenes/<nombre>')
+def obtener_imagen(nombre):
+    return send_from_directory(images_dir, nombre)
 
 if __name__ == '__main__':
     try:
