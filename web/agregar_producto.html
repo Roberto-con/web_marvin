@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,7 +36,6 @@
             window.location.href = "login.html";
         }
 
-        // Evita que se regrese con el botón “atrás” tras cerrar sesión
         window.addEventListener("pageshow", function (event) {
             if (event.persisted || performance.navigation.type === 2) {
                 if (!localStorage.getItem("token")) {
@@ -51,7 +51,7 @@
         <form id="formulario-agregar">
             <div class="mb-3">
                 <label for="codigo" class="form-label">Código</label>
-                <input type="text" class="form-control" id="codigo" required>
+                <input type="text" class="form-control" id="codigo">
             </div>
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -59,7 +59,19 @@
             </div>
             <div class="mb-3">
                 <label for="precio" class="form-label">Precio</label>
-                <input type="number" step="0.01" class="form-control" id="precio" required>
+                <input type="number" step="0.01" class="form-control" id="precio">
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="tipo">
+            </div>
+            <div class="mb-3">
+                <label for="sabor" class="form-label">Sabor</label>
+                <input type="text" class="form-control" id="sabor">
+            </div>
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input type="text" class="form-control" id="cantidad">
             </div>
             <div class="mb-3">
                 <label for="imagen" class="form-label">Imagen</label>
@@ -92,6 +104,9 @@
             formData.append("codigo", document.getElementById("codigo").value);
             formData.append("nombre", document.getElementById("nombre").value);
             formData.append("precio", document.getElementById("precio").value);
+            formData.append("tipo", document.getElementById("tipo").value);
+            formData.append("sabor", document.getElementById("sabor").value);
+            formData.append("cantidad", document.getElementById("cantidad").value);
             formData.append("imagen", document.getElementById("imagen").files[0]);
             formData.append("disponible", document.getElementById("disponible").checked);
 
@@ -134,7 +149,7 @@
             const data = await res.json();
             alert(data.mensaje);
             if (res.ok) {
-                window.location.reload(); // recarga para mostrar nuevos productos si quieres
+                window.location.reload();
             }
         } catch (err) {
             alert("Error al subir el archivo");
