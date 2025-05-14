@@ -148,6 +148,8 @@ def guardar_pedido():
     conn.close()
     return jsonify({"mensaje": "Pedido recibido correctamente"}), 200
 
+import cloudinary.uploader
+
 @app.route('/api/agregar_producto', methods=['POST'])
 def agregar_producto():
     if not verificar_token_admin():
@@ -162,19 +164,25 @@ def agregar_producto():
     if not imagen:
         return jsonify({"mensaje": "No se subió ninguna imagen"}), 400
 
-    filename_original = secure_filename(imagen.filename)
-    extension = os.path.splitext(filename_original)[1]
-    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    nombre_archivo = f"{os.path.splitext(filename_original)[0]}_{timestamp}{extension}"
-    ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
-    imagen.save(ruta_archivo)
+    try:
+        # Subir imagen a Cloudinary
+        resultado = cloudinary.uploader.upload(
+            imagen,
+            folder="productos_delizia",
+            use_filename=True,
+            unique_filename=True
+        )
+        imagen_url = resultado.get("secure_url")
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al subir imagen a Cloudinary: {str(e)}"}), 500
 
-    imagen_url = f"images/{nombre_archivo}"
-
+    # Guardar en base de datos
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO productos (codigo, nombre, precio, imagen_url, disponible) VALUES (%s, %s, %s, %s, %s)",
-                   (codigo, nombre, precio, imagen_url, disponible))
+    cursor.execute(
+        "INSERT INTO productos (codigo, nombre, precio, imagen_url, disponible) VALUES (%s, %s, %s, %s, %s)",
+        (codigo, nombre, precio, imagen_url, disponible)
+    )
     conn.commit()
     conn.close()
 
