@@ -19,6 +19,14 @@ from flask import send_file
 import tempfile
 
 load_dotenv()
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 SECRET_KEY = 'supersecreto'
 
@@ -187,14 +195,19 @@ def editar_producto():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    imagen_url = None
+
     if imagen:
-        filename_original = secure_filename(imagen.filename)
-        extension = os.path.splitext(filename_original)[1]
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        nombre_archivo = f"{os.path.splitext(filename_original)[0]}_{timestamp}{extension}"
-        ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
-        imagen.save(ruta_archivo)
-        imagen_url = f"images/{nombre_archivo}"
+        try:
+            resultado = cloudinary.uploader.upload(
+                imagen,
+                folder="productos_delizia",
+                public_id=f"{codigo or nombre}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}",
+                resource_type="image"
+            )
+            imagen_url = resultado.get("secure_url")
+        except Exception as e:
+            return jsonify({"mensaje": f"Error al subir imagen: {str(e)}"}), 500
 
         cursor.execute(
             "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, imagen_url=%s, disponible=%s WHERE id=%s",
