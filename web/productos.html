@@ -152,33 +152,56 @@
         }
     }
     </script>
+    
     <script>
     function mostrarConfirmacionEliminar() {
-        const contrasena = prompt("⚠️ Esta acción eliminará TODOS los productos.\nPor favor, ingresa tu contraseña para confirmar:");
-        if (!contrasena) return;
+        const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+        modal.show();
+    }
 
-        fetch("/api/eliminar_base_datos", {
+    async function eliminarBaseDeDatos() {
+        const contrasena = document.getElementById("contrasenaConfirmacion").value;
+        if (!contrasena) return alert("Por favor ingresa la contraseña.");
+
+        const res = await fetch("/api/eliminar_base_datos", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({ contrasena })
-        })
-        .then(res => res.json().then(data => ({ ok: res.ok, data })))
-        .then(res => {
-            if (res.ok) {
-                alert("✅ Base de datos eliminada correctamente.");
-                window.location.reload();
-            } else {
-                alert("❌ " + res.data.mensaje);
-            }
-        })
-        .catch(() => {
-            alert("❌ Error al conectar con el servidor.");
         });
+
+        const data = await res.json();
+        if (res.ok) {
+            alert("✅ Base de datos eliminada correctamente.");
+            window.location.reload();
+        } else {
+            alert("❌ " + data.mensaje);
+        }
     }
     </script>
+    
+    <!-- Modal de confirmación para eliminar base de datos -->
+    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content border-danger">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="eliminarModalLabel">🛑 Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>Esta acción eliminará <strong>todos los productos</strong> de la base de datos.</p>
+            <p>Por favor, ingresa tu contraseña para confirmar:</p>
+            <input type="password" id="contrasenaConfirmacion" class="form-control" placeholder="Contraseña" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" onclick="eliminarBaseDeDatos()">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="js/session.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
