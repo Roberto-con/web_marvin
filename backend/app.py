@@ -476,6 +476,33 @@ def exportar_productos(usuario_data):
 def obtener_imagen(nombre):
     return send_from_directory(images_dir, nombre)
 
+
+@app.route('/api/eliminar_base_datos', methods=['POST'])
+@token_requerido
+def eliminar_base_datos(usuario_data):
+    if usuario_data["rol"] != "admin":
+        return jsonify({"mensaje": "Acceso denegado"}), 403
+
+    datos = request.get_json()
+    contrasena = datos.get("contrasena")
+
+    # Verificar contraseña
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT password_hash FROM usuarios WHERE usuario = %s", (usuario_data["usuario"],))
+    usuario = cursor.fetchone()
+
+    if not usuario or not bcrypt.checkpw(contrasena.encode(), usuario["password_hash"].encode()):
+        conn.close()
+        return jsonify({"mensaje": "Contraseña incorrecta"}), 401
+
+    # Borrar tabla de productos
+    cursor.execute("DELETE FROM productos")
+    conn.commit()
+    conn.close()
+
+    return jsonify({"mensaje": "Base de datos eliminada correctamente"}), 200
+
 if __name__ == '__main__':
     try:
         conn = get_db_connection()
