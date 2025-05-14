@@ -393,10 +393,11 @@ def importar_productos(usuario_data):
 
         for _, row in df.iterrows():
             nombre = row["nombre"]
+            sabor = row["sabor"] if pd.notna(row.get("sabor")) else ""
             nueva_imagen = row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
 
-            # Verificar si ya existe un producto con el mismo nombre
-            cursor.execute("SELECT id, imagen_url FROM productos WHERE nombre = %s", (nombre,))
+            # Verificar si ya existe un producto con el mismo nombre y sabor
+            cursor.execute("SELECT id, imagen_url FROM productos WHERE nombre = %s AND sabor = %s", (nombre, sabor))
             producto_existente = cursor.fetchone()
 
             if producto_existente:
@@ -408,18 +409,17 @@ def importar_productos(usuario_data):
                     SET codigo = %s,
                         precio = %s,
                         tipo = %s,
-                        sabor = %s,
                         cantidad = %s,
                         imagen_url = %s
-                    WHERE nombre = %s
+                    WHERE nombre = %s AND sabor = %s
                 """, (
                     row["codigo"] if pd.notna(row.get("codigo")) else None,
                     row["precio"] if pd.notna(row.get("precio")) else 0.00,
                     row["tipo"] if pd.notna(row.get("tipo")) else "",
-                    row["sabor"] if pd.notna(row.get("sabor")) else "",
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
                     imagen_final,
-                    nombre
+                    nombre,
+                    sabor
                 ))
             else:
                 cursor.execute("""
@@ -430,7 +430,7 @@ def importar_productos(usuario_data):
                     nombre,
                     row["precio"] if pd.notna(row.get("precio")) else 0.00,
                     row["tipo"] if pd.notna(row.get("tipo")) else "",
-                    row["sabor"] if pd.notna(row.get("sabor")) else "",
+                    sabor,
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
                     nueva_imagen
                 ))
@@ -441,6 +441,8 @@ def importar_productos(usuario_data):
 
     except Exception as e:
         return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
+
+
 @app.route('/api/exportar_productos', methods=['GET'])
 @token_requerido
 def exportar_productos(usuario_data):
