@@ -197,6 +197,7 @@ def editar_producto():
     codigo = request.form.get("codigo")
     nombre = request.form.get("nombre")
     precio = request.form.get("precio")
+    sabor = request.form.get("sabor")  # <--- SE AÑADE ESTE CAMPO
     disponible = request.form.get("disponible", "true").lower() == "true"
     imagen = request.files.get("imagen")
 
@@ -218,13 +219,13 @@ def editar_producto():
             return jsonify({"mensaje": f"Error al subir imagen: {str(e)}"}), 500
 
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, imagen_url=%s, disponible=%s WHERE id=%s",
-            (codigo, nombre, precio, imagen_url, disponible, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, imagen_url=%s, disponible=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, imagen_url, disponible, id_producto)
         )
     else:
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, disponible=%s WHERE id=%s",
-            (codigo, nombre, precio, disponible, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, disponible=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, disponible, id_producto)
         )
 
     conn.commit()
