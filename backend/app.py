@@ -364,51 +364,83 @@ def limpiar_pedidos():
     except Exception as e:
         return jsonify({"mensaje": f"Error al eliminar pedidos: {str(e)}"}), 500
 
-for _, row in df.iterrows():
-    nombre = row["nombre"]
+@app.route('/api/importar_productos', methods=['POST'])
+@token_requerido
+def importar_productos(usuario_data):
+    if usuario_data["rol"] != "admin":
+        return jsonify({"mensaje": "Acceso no autorizado"}), 403
 
-    # Verificar si ya existe un producto con el mismo nombre
-    cursor.execute("SELECT id, imagen_url FROM productos WHERE nombre = %s", (nombre,))
-    producto_existente = cursor.fetchone()
+    archivo = request.files.get("archivo")
+    if not archivo:
+        return jsonify({"mensaje": "Archivo no recibido"}), 400
 
-    nueva_imagen = row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
+    try:
+        # Leer archivo Excel desde memoria
+        df = pd.read_excel(archivo, engine="openpyxl")
 
-    if producto_existente:
-        # Si ya tiene imagen, conservarla
-        imagen_final = producto_existente[1] if producto_existente[1] else nueva_imagen
+        # Validar columnas esperadas
+        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url"}
+        if not columnas_esperadas.issubset(df.columns):
+            return jsonify({"mensaje": "Formato incorrecto. Verifica los encabezados de las columnas."}), 400
 
-        cursor.execute("""
-            UPDATE productos
-            SET codigo = %s,
-                precio = %s,
-                tipo = %s,
-                sabor = %s,
-                cantidad = %s,
-                imagen_url = %s
-            WHERE nombre = %s
-        """, (
-            row["codigo"] if pd.notna(row.get("codigo")) else None,
-            row["precio"] if pd.notna(row.get("precio")) else 0.00,
-            row["tipo"] if pd.notna(row.get("tipo")) else "",
-            row["sabor"] if pd.notna(row.get("sabor")) else "",
-            row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
-            imagen_final,
-            nombre
-        ))
-    else:
-        # Insertar nuevo producto
-        cursor.execute("""
-            INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (
-            row["codigo"] if pd.notna(row.get("codigo")) else None,
-            nombre,
-            row["precio"] if pd.notna(row.get("precio")) else 0.00,
-            row["tipo"] if pd.notna(row.get("tipo")) else "",
-            row["sabor"] if pd.notna(row.get("sabor")) else "",
-            row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
-            nueva_imagen
-        ))
+        # Validar campos obligatorios por fila (solo 'nombre' es requerido)
+        for index, row in df.iterrows():
+            if pd.isna(row["nombre"]):
+                return jsonify({"mensaje": f"Falta el nombre en la fila {index + 2}"}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        for _, row in df.iterrows():
+            nombre = row["nombre"]
+            nueva_imagen = row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
+
+            # Verificar si ya existe un producto con el mismo nombre
+            cursor.execute("SELECT id, imagen_url FROM productos WHERE nombre = %s", (nombre,))
+            producto_existente = cursor.fetchone()
+
+            if producto_existente:
+                imagen_actual = producto_existente[1]
+                imagen_final = imagen_actual if imagen_actual else nueva_imagen
+
+                cursor.execute("""
+                    UPDATE productos
+                    SET codigo = %s,
+                        precio = %s,
+                        tipo = %s,
+                        sabor = %s,
+                        cantidad = %s,
+                        imagen_url = %s
+                    WHERE nombre = %s
+                """, (
+                    row["codigo"] if pd.notna(row.get("codigo")) else None,
+                    row["precio"] if pd.notna(row.get("precio")) else 0.00,
+                    row["tipo"] if pd.notna(row.get("tipo")) else "",
+                    row["sabor"] if pd.notna(row.get("sabor")) else "",
+                    row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
+                    imagen_final,
+                    nombre
+                ))
+            else:
+                cursor.execute("""
+                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    row["codigo"] if pd.notna(row.get("codigo")) else None,
+                    nombre,
+                    row["precio"] if pd.notna(row.get("precio")) else 0.00,
+                    row["tipo"] if pd.notna(row.get("tipo")) else "",
+                    row["sabor"] if pd.notna(row.get("sabor")) else "",
+                    row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
+                    nueva_imagen
+                ))
+
+        conn.commit()
+        conn.close()
+        return jsonify({"mensaje": "Productos importados y actualizados correctamente"}), 200
+
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al procesar el archivo: {str(e)}"}), 500
 @app.route('/api/exportar_productos', methods=['GET'])
 @token_requerido
 def exportar_productos(usuario_data):
