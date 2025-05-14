@@ -125,7 +125,7 @@ def login():
 def obtener_productos():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, codigo, nombre, precio, imagen_url, disponible FROM productos")
+    cursor.execute("SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible FROM productos")
     productos = cursor.fetchall()
     conn.close()
     return jsonify(productos)
