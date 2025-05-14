@@ -507,6 +507,28 @@ def eliminar_base_datos(usuario_data):
 
     return jsonify({"mensaje": "Base de datos eliminada correctamente"}), 200
 
+@app.route('/api/eliminar_producto', methods=['DELETE'])
+@token_requerido
+def eliminar_producto(usuario_data):
+    if usuario_data["rol"] != "admin":
+        return jsonify({"mensaje": "Acceso denegado"}), 403
+
+    data = request.get_json()
+    producto_id = data.get("id")
+
+    if not producto_id:
+        return jsonify({"mensaje": "ID de producto requerido"}), 400
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM productos WHERE id = %s", (producto_id,))
+        conn.commit()
+        conn.close()
+        return jsonify({"mensaje": "Producto eliminado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al eliminar producto: {str(e)}"}), 500
+
 if __name__ == '__main__':
     try:
         conn = get_db_connection()

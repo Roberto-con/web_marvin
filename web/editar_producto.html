@@ -27,8 +27,8 @@
             }
 
             .btn-warning {
-                background-color: #E50027;
-                border-color: #E50027;
+                background-color: #0022e5;
+                border-color: #0022e5;
             }
 
             .btn-warning:hover {
@@ -106,6 +106,7 @@
                 <label class="form-check-label" for="disponible">Producto disponible</label>
             </div>
             <div class="text-end">
+                <button id="btn-eliminar" type="button" class="btn btn-danger">🗑️ Eliminar producto</button>
                 <button type="submit" class="btn btn-warning px-4">Guardar cambios</button>
             </div>
         </form>
@@ -158,6 +159,34 @@
                 window.location.href = "productos.html";
             }
         });
+    </script>
+    <script>
+    document.getElementById("btn-eliminar").addEventListener("click", async function () {
+        const confirmar = confirm("¿Estás seguro de que deseas eliminar este producto?");
+        if (!confirmar) return;
+
+        const id = document.getElementById("producto-id").value;
+
+        try {
+            const res = await fetch("/api/eliminar_producto", {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id })
+            });
+
+            const data = await res.json();
+            alert(data.mensaje);
+
+            if (res.ok) {
+                window.location.href = "productos.html";
+            }
+        } catch (err) {
+            alert("Error al eliminar el producto.");
+        }
+    });
     </script>
     <script src="js/session.js"></script>
 </body>
