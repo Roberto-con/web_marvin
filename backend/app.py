@@ -379,15 +379,13 @@ def importar_productos(usuario_data):
         return jsonify({"mensaje": "Archivo no recibido"}), 400
 
     try:
-        # Leer archivo Excel desde memoria
         df = pd.read_excel(archivo, engine="openpyxl")
 
-        # Validar columnas esperadas
-        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url"}
+        # ✅ Incluye 'disponible' como columna esperada
+        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url", "disponible"}
         if not columnas_esperadas.issubset(df.columns):
             return jsonify({"mensaje": "Formato incorrecto. Verifica los encabezados de las columnas."}), 400
 
-        # Validar campos obligatorios por fila (solo 'nombre' es requerido)
         for index, row in df.iterrows():
             if pd.isna(row["nombre"]):
                 return jsonify({"mensaje": f"Falta el nombre en la fila {index + 2}"}), 400
@@ -400,7 +398,11 @@ def importar_productos(usuario_data):
             sabor = row["sabor"] if pd.notna(row.get("sabor")) else ""
             nueva_imagen = row["imagen_url"] if pd.notna(row.get("imagen_url")) else ""
 
-            # Verificar si ya existe un producto con el mismo nombre y sabor
+            # ✅ Procesar el valor de 'disponible'
+            raw_disponible = str(row.get("disponible")).strip().lower()
+            disponible = 1 if raw_disponible in ["1", "true", "sí", "si", "disponible"] else 0
+
+            # Verificar si ya existe
             cursor.execute("SELECT id, imagen_url FROM productos WHERE nombre = %s AND sabor = %s", (nombre, sabor))
             producto_existente = cursor.fetchone()
 
@@ -414,7 +416,8 @@ def importar_productos(usuario_data):
                         precio = %s,
                         tipo = %s,
                         cantidad = %s,
-                        imagen_url = %s
+                        imagen_url = %s,
+                        disponible = %s
                     WHERE nombre = %s AND sabor = %s
                 """, (
                     row["codigo"] if pd.notna(row.get("codigo")) else None,
@@ -422,13 +425,14 @@ def importar_productos(usuario_data):
                     row["tipo"] if pd.notna(row.get("tipo")) else "",
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
                     imagen_final,
+                    disponible,
                     nombre,
                     sabor
                 ))
             else:
                 cursor.execute("""
-                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     row["codigo"] if pd.notna(row.get("codigo")) else None,
                     nombre,
@@ -436,7 +440,8 @@ def importar_productos(usuario_data):
                     row["tipo"] if pd.notna(row.get("tipo")) else "",
                     sabor,
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
-                    nueva_imagen
+                    nueva_imagen,
+                    disponible
                 ))
 
         conn.commit()
