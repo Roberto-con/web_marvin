@@ -146,19 +146,16 @@ select {
 }
 @media (max-width: 991px) {
     .product-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas solo en móviles/tablets */
     }
 
     .product-card {
         margin-bottom: 0.5rem;
     }
-
     .card {
-        /* max-height: 220px; */   ← ❌ COMENTA O BORRA
-        overflow: visible;         /* ✅ NUEVO */
-        min-height: 220px;         /* ✅ OPCIONAL */
+        max-height: 220px; /* o ajusta según preferencia */
+        overflow: hidden;
     }
-
     .card-img-top {
         height: 110px;
     }
