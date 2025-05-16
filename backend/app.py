@@ -123,12 +123,34 @@ def login():
 
 @app.route('/api/productos', methods=['GET'])
 def obtener_productos():
+    # Leer parámetros de paginación desde la URL
+    pagina = int(request.args.get("pagina", 1))
+    limite = int(request.args.get("limite", 20))
+    offset = (pagina - 1) * limite
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible FROM productos")
+
+    # Total de productos para cálculo de páginas
+    cursor.execute("SELECT COUNT(*) AS total FROM productos")
+    total = cursor.fetchone()["total"]
+
+    # Obtener productos paginados
+    cursor.execute("""
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+        FROM productos
+        ORDER BY nombre
+        LIMIT %s OFFSET %s
+    """, (limite, offset))
     productos = cursor.fetchall()
+
     conn.close()
-    return jsonify(productos)
+    return jsonify({
+        "productos": productos,
+        "pagina": pagina,
+        "limite": limite,
+        "total": total
+    })
 
 @app.route('/api/pedido', methods=['POST'])
 def guardar_pedido():

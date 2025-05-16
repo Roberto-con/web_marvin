@@ -1,9 +1,19 @@
 
 // Obtener productos desde Flask API
+let paginaActual = 1;
+const limitePorPagina = 20;
+
 if (document.getElementById("product-list")) {
-    fetch("/api/productos")
+    cargarProductos(paginaActual);
+}
+
+function cargarProductos(pagina) {
+    fetch(`/api/productos?pagina=${pagina}&limite=${limitePorPagina}`)
         .then(res => res.json())
-        .then(data => mostrarProductos(data));
+        .then(data => {
+            mostrarProductos(data.productos);
+            mostrarPaginacion(data.total, data.pagina, data.limite);
+        });
 }
 
 function mostrarProductos(productos) {
@@ -196,5 +206,21 @@ function vaciarCarrito() {
     if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
         localStorage.removeItem("carrito");
         location.reload();
+    }
+}
+
+function mostrarPaginacion(total, pagina, limite) {
+    const totalPaginas = Math.ceil(total / limite);
+    const contenedor = document.getElementById("paginacion");
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "";
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.className = `btn btn-sm mx-1 ${i === pagina ? 'btn-primary' : 'btn-outline-primary'}`;
+        btn.onclick = () => cargarProductos(i);
+        contenedor.appendChild(btn);
     }
 }
