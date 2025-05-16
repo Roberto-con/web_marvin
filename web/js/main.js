@@ -18,6 +18,7 @@ function cargarProductos(pagina) {
 
 function mostrarProductos(productos) {
     const contenedor = document.getElementById("product-list");
+    contenedor.innerHTML = "";
     const rol = localStorage.getItem("rol");
 
     productos.forEach(prod => {
