@@ -1,13 +1,14 @@
 
 // Obtener productos desde Flask API
+
 let paginaActual = 1;
 const limitePorPagina = 20;
+let tipoFiltro = "Todos"; // valor global actual del filtro
 
 if (document.getElementById("product-list")) {
     cargarProductos(paginaActual);
 }
 
-let tipoFiltro = "Todos"; // valor global actual del filtro
 
 function cargarProductos(pagina) {
     let url = `/api/productos?pagina=${pagina}&limite=${limitePorPagina}`;
