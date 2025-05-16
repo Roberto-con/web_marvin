@@ -13,6 +13,12 @@ function cargarProductos(pagina) {
         .then(data => {
             mostrarProductos(data.productos);
             mostrarPaginacion(data.total, data.pagina, data.limite);
+
+             // ⬆️ Scroll automático al contenedor de productos
+            const contenedor = document.getElementById("product-list");
+            if (contenedor) {
+                contenedor.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         });
 }
 
