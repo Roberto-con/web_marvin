@@ -7,14 +7,20 @@ if (document.getElementById("product-list")) {
     cargarProductos(paginaActual);
 }
 
+let tipoFiltro = "Todos"; // valor global actual del filtro
+
 function cargarProductos(pagina) {
-    fetch(`/api/productos?pagina=${pagina}&limite=${limitePorPagina}`)
+    let url = `/api/productos?pagina=${pagina}&limite=${limitePorPagina}`;
+    if (tipoFiltro !== "Todos") {
+        url += `&tipo=${encodeURIComponent(tipoFiltro)}`;
+    }
+
+    fetch(url)
         .then(res => res.json())
         .then(data => {
             mostrarProductos(data.productos);
             mostrarPaginacion(data.total, data.pagina, data.limite);
 
-             // ⬆️ Scroll automático al contenedor de productos
             const contenedor = document.getElementById("product-list");
             if (contenedor) {
                 contenedor.scrollIntoView({ behavior: "smooth", block: "start" });

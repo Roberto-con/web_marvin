@@ -82,6 +82,12 @@
                 <input type="text" id="busqueda" class="form-control" placeholder="Buscar productos...">
             </div>
         </div>
+        <div class="mb-3 text-center">
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Todos">Todos</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Helado">Helados</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Lacteo">Lácteos</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Bebida">Bebidas</button>
+        </div>
         <div class="product-grid" id="product-list">
             <!-- Productos se insertan aquí con JavaScript -->
         </div>
@@ -182,6 +188,15 @@
             alert("❌ " + data.mensaje);
         }
     }
+    </script>
+    <script>
+    document.querySelectorAll(".filtro-tipo").forEach(btn => {
+        btn.addEventListener("click", () => {
+            tipoFiltro = btn.dataset.tipo;
+            paginaActual = 1;
+            cargarProductos(paginaActual);
+        });
+    });
     </script>
     
     <!-- Modal de confirmación para eliminar base de datos -->

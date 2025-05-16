@@ -123,28 +123,39 @@ def login():
 
 @app.route('/api/productos', methods=['GET'])
 def obtener_productos():
-    # Leer parámetros de paginación desde la URL
     pagina = int(request.args.get("pagina", 1))
     limite = int(request.args.get("limite", 20))
     offset = (pagina - 1) * limite
+    tipo = request.args.get("tipo")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Total de productos para cálculo de páginas
-    cursor.execute("SELECT COUNT(*) AS total FROM productos")
-    total = cursor.fetchone()["total"]
+    if tipo and tipo.lower() != "todos":
+        cursor.execute("SELECT COUNT(*) AS total FROM productos WHERE tipo = %s", (tipo,))
+        total = cursor.fetchone()["total"]
 
-    # Obtener productos paginados
-    cursor.execute("""
-        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
-        FROM productos
-        ORDER BY nombre
-        LIMIT %s OFFSET %s
-    """, (limite, offset))
+        cursor.execute("""
+            SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+            FROM productos
+            WHERE tipo = %s
+            ORDER BY nombre
+            LIMIT %s OFFSET %s
+        """, (tipo, limite, offset))
+    else:
+        cursor.execute("SELECT COUNT(*) AS total FROM productos")
+        total = cursor.fetchone()["total"]
+
+        cursor.execute("""
+            SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+            FROM productos
+            ORDER BY nombre
+            LIMIT %s OFFSET %s
+        """, (limite, offset))
+
     productos = cursor.fetchall()
-
     conn.close()
+
     return jsonify({
         "productos": productos,
         "pagina": pagina,
