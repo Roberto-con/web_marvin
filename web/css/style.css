@@ -154,7 +154,7 @@ select {
     }
     .card {
         max-height: 220px; /* o ajusta según preferencia */
-        overflow: visible;
+        overflow: hidden;
     }
     .card-img-top {
         height: 110px;
