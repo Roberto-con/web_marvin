@@ -151,8 +151,10 @@ select {
     }
 
     .card-img-top {
-        height: 100px;
-    }
+           height: 120px;
+           object-fit: contain;
+           padding: 0.5rem;
+       }
 
     .card-title {
         font-size: 0.65rem;
