@@ -22,10 +22,10 @@ function cargarProductos(pagina) {
             mostrarProductos(data.productos);
             mostrarPaginacion(data.total, data.pagina, data.limite);
 
-            const contenedor = document.getElementById("product-list");
-            if (contenedor) {
-                contenedor.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
+           const navbar = document.querySelector(".navbar");
+           if (navbar) {
+           navbar.scrollIntoView({ behavior: "smooth", block: "start" });
+           }
         });
 }
 
