@@ -144,32 +144,39 @@ select {
     font-size: clamp(0.65rem, 0.9vw, 0.85rem);
     padding: 4px 8px;
 }
-@media (max-width: 991px) {
-    .product-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columnas solo en móviles/tablets */
+@media (max-width: 576px) {
+    .card {
+        height: auto;
+        min-height: unset;
     }
 
-    .product-card {
-        margin-bottom: 0.5rem;
-    }
-    .card {
-        max-height: 220px; /* o ajusta según preferencia */
-        overflow: hidden;
-    }
     .card-img-top {
-        height: 110px;
+        height: 100px;
     }
 
     .card-title {
-        font-size: 0.6rem;
+        font-size: 0.65rem;
+        line-height: 1.1;
+        margin-bottom: 0.3rem;
     }
 
     .card-text {
-        font-size: 0.5rem;
+        font-size: 0.55rem;
+        line-height: 1.1;
     }
 
     .btn {
-        font-size: 0.5rem;
-        padding: 2px 4px;
+        font-size: 0.55rem;
+        padding: 3px 6px;
+    }
+
+    .card-body {
+        padding: 0.6rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
