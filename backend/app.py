@@ -127,31 +127,37 @@ def obtener_productos():
     limite = int(request.args.get("limite", 20))
     offset = (pagina - 1) * limite
     tipo = request.args.get("tipo")
+    busqueda = request.args.get("busqueda")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    condiciones = []
+    valores = []
+
     if tipo and tipo.lower() != "todos":
-        cursor.execute("SELECT COUNT(*) AS total FROM productos WHERE tipo = %s", (tipo,))
-        total = cursor.fetchone()["total"]
+        condiciones.append("tipo = %s")
+        valores.append(tipo)
 
-        cursor.execute("""
-            SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
-            FROM productos
-            WHERE tipo = %s
-            ORDER BY nombre
-            LIMIT %s OFFSET %s
-        """, (tipo, limite, offset))
-    else:
-        cursor.execute("SELECT COUNT(*) AS total FROM productos")
-        total = cursor.fetchone()["total"]
+    if busqueda:
+        condiciones.append("LOWER(nombre) LIKE %s")
+        valores.append(f"%{busqueda.lower()}%")
 
-        cursor.execute("""
-            SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
-            FROM productos
-            ORDER BY nombre
-            LIMIT %s OFFSET %s
-        """, (limite, offset))
+    where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
+
+    # Total para paginación
+    cursor.execute(f"SELECT COUNT(*) AS total FROM productos {where_sql}", valores)
+    total = cursor.fetchone()["total"]
+
+    # Lista de productos
+    valores.extend([limite, offset])
+    cursor.execute(f"""
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+        FROM productos
+        {where_sql}
+        ORDER BY nombre
+        LIMIT %s OFFSET %s
+    """, valores)
 
     productos = cursor.fetchall()
     conn.close()

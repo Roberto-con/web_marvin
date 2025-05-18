@@ -3,17 +3,23 @@
 
 let paginaActual = 1;
 const limitePorPagina = 20;
-let tipoFiltro = "Todos"; // valor global actual del filtro
+let tipoFiltro = "Todos";
+let terminoBusqueda = ""; // valor global actual del filtro
 
 if (document.getElementById("product-list")) {
     cargarProductos(paginaActual);
 }
 
 
-function cargarProductos(pagina) {
+function cargarProductos(pagina, terminoBusqueda = "") {
     let url = `/api/productos?pagina=${pagina}&limite=${limitePorPagina}`;
+    
     if (tipoFiltro !== "Todos") {
         url += `&tipo=${encodeURIComponent(tipoFiltro)}`;
+    }
+
+    if (terminoBusqueda) {
+        url += `&busqueda=${encodeURIComponent(terminoBusqueda)}`;
     }
 
     fetch(url)
@@ -22,10 +28,10 @@ function cargarProductos(pagina) {
             mostrarProductos(data.productos);
             mostrarPaginacion(data.total, data.pagina, data.limite);
 
-           const ancla = document.getElementById("scroll-top-productos");
-           if (ancla) {
-           ancla.scrollIntoView({ behavior: "smooth", block: "start" });
-           }
+            const ancla = document.getElementById("scroll-top-productos");
+            if (ancla) {
+                ancla.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         });
 }
 
@@ -198,21 +204,14 @@ ${carrito.map(p =>
 }
 
 // Búsqueda dinámica
-if (document.getElementById("busqueda")) {
-    document.getElementById("busqueda").addEventListener("input", e => {
-        const termino = e.target.value.toLowerCase();
-        const rol = localStorage.getItem("rol");
-        const tarjetas = document.querySelectorAll("#product-list .product-card");
-
-        tarjetas.forEach(card => {
-            const nombre = card.dataset.nombre.toLowerCase();
-            const codigo = card.dataset.codigo.toLowerCase();
-            const coincide =
-                rol === "admin"
-                    ? nombre.includes(termino) || codigo.includes(termino)
-                    : nombre.includes(termino);
-            card.style.display = coincide ? "block" : "none";
-        });
+const inputBusqueda = document.getElementById("busqueda");
+if (inputBusqueda) {
+    inputBusqueda.addEventListener("input", () => {
+        terminoBusqueda = inputBusqueda.value.trim();
+        paginaActual = 1;
+        cargarProductos(paginaActual, terminoBusqueda);
+    });
+});
     });
 }
 
@@ -272,4 +271,13 @@ function mostrarPaginacion(total, pagina, limite) {
 
     // Siguiente ›
     contenedor.appendChild(crearBoton("›", pagina + 1, false, pagina === totalPaginas));
+}
+
+const inputBusqueda = document.getElementById("busqueda");
+if (inputBusqueda) {
+    inputBusqueda.addEventListener("input", () => {
+        const termino = inputBusqueda.value.trim();
+        paginaActual = 1;
+        cargarProductos(paginaActual, termino);
+    });
 }
