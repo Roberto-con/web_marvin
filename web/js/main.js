@@ -206,7 +206,7 @@ ${carrito.map(p =>
 // Búsqueda dinámica
 const inputBusqueda = document.getElementById("busqueda");
 if (inputBusqueda) {
-    inputBusqueda.addEventListener("input", () => {
+    inputBusqueda.addEventListener("input", function() {
         terminoBusqueda = inputBusqueda.value.trim();
         paginaActual = 1;
         cargarProductos(paginaActual, terminoBusqueda);
