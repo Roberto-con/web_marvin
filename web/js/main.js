@@ -272,6 +272,6 @@ if (inputBusqueda) {
             terminoBusqueda = inputBusqueda.value.trim();
             paginaActual = 1;
             cargarProductos(paginaActual, terminoBusqueda);
-        }, 400); // Espera 400ms después de la última tecla
+        }, 200); // Espera 400ms después de la última tecla
     });
 }
