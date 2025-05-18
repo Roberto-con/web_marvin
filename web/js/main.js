@@ -224,7 +224,7 @@ function mostrarPaginacion(total, pagina, limite) {
         btn.className = `btn btn-sm mx-1 ${activo ? 'btn-primary' : 'btn-outline-primary'}`;
         btn.disabled = deshabilitado;
         if (!deshabilitado) {
-            btn.onclick = () => cargarProductos(paginaDestino);
+            btn.onclick = () => cargarProductos(paginaDestino, terminoBusqueda);
         }
         return btn;
     };
