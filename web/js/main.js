@@ -262,11 +262,16 @@ function mostrarPaginacion(total, pagina, limite) {
     contenedor.appendChild(crearBoton("›", pagina + 1, false, pagina === totalPaginas));
 }
 
+let debounceTimer;
 const inputBusqueda = document.getElementById("busqueda");
+
 if (inputBusqueda) {
     inputBusqueda.addEventListener("input", () => {
-        const termino = inputBusqueda.value.trim();
-        paginaActual = 1;
-        cargarProductos(paginaActual, termino);
+        clearTimeout(debounceTimer); // Reinicia el temporizador
+        debounceTimer = setTimeout(() => {
+            terminoBusqueda = inputBusqueda.value.trim();
+            paginaActual = 1;
+            cargarProductos(paginaActual, terminoBusqueda);
+        }, 400); // Espera 400ms después de la última tecla
     });
 }
