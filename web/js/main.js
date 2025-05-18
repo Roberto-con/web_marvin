@@ -211,10 +211,7 @@ if (inputBusqueda) {
         paginaActual = 1;
         cargarProductos(paginaActual, terminoBusqueda);
     });
-});
-    });
 }
-
 function vaciarCarrito() {
     if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
         localStorage.removeItem("carrito");
