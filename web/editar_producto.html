@@ -121,7 +121,7 @@
         fetch("/api/productos")
             .then(res => res.json())
             .then(data => {
-                const producto = data.find(p => p.id == id);
+                const producto = data.productos.find(p => p.id == id);
                 if (producto) {
                     document.getElementById("codigo").value = producto.codigo;
                     document.getElementById("nombre").value = producto.nombre;
