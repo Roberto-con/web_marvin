@@ -47,7 +47,7 @@ function mostrarProductos(productos) {
         card.dataset.codigo = prod.codigo;
 
         // Si el producto está en oferta, agregar la etiqueta
-        if (prod.oferta) {
+        if (prod.oferta == 1 || prod.oferta === true) {
             const ofertaBadge = document.createElement("span");
             ofertaBadge.className = "oferta-badge";
             ofertaBadge.textContent = "Oferta";
