@@ -45,6 +45,15 @@ function mostrarProductos(productos) {
         card.className = "product-card mb-4";
         card.dataset.nombre = prod.nombre;
         card.dataset.codigo = prod.codigo;
+
+        // Si el producto está en oferta, agregar la etiqueta
+        if (prod.oferta) {
+            const ofertaBadge = document.createElement("span");
+            ofertaBadge.className = "oferta-badge";
+            ofertaBadge.textContent = "Oferta";
+            card.appendChild(ofertaBadge);
+        }
+
         let contenidoBoton = "";
 
         if (rol === "admin") {
@@ -61,17 +70,18 @@ function mostrarProductos(productos) {
             contenidoBoton = `<span class="badge bg-danger">Agotado</span>`;
         }
 
-        card.innerHTML = `
+        card.innerHTML += `
             <div class="card h-100">
                 <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="card-body d-flex flex-column justify-content-between">
-    <h5 class="card-title">${prod.nombre} - ${prod.sabor}</h5>
-    <p class="card-text">${prod.cantidad}</p>
-    <p class="card-text">Precio: ${prod.precio} Bs</p>
+                    <h5 class="card-title">${prod.nombre} - ${prod.sabor}</h5>
+                    <p class="card-text">${prod.cantidad}</p>
+                    <p class="card-text">Precio: ${prod.precio} Bs</p>
                     ${contenidoBoton}
                 </div>
             </div>
         `;
+
         contenedor.appendChild(card);
     });
 }
