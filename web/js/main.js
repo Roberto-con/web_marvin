@@ -36,6 +36,7 @@ function cargarProductos(pagina, terminoBusqueda = "") {
 }
 
 function mostrarProductos(productos) {
+    console.log(productos); // ✅ TEMPORAL
     const contenedor = document.getElementById("product-list");
     contenedor.innerHTML = "";
     const rol = localStorage.getItem("rol");
