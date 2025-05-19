@@ -152,12 +152,12 @@ def obtener_productos():
     # Lista de productos
     valores.extend([limite, offset])
     cursor.execute(f"""
-        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
-        FROM productos
-        {where_sql}
-        ORDER BY nombre
-        LIMIT %s OFFSET %s
-    """, valores)
+    SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, oferta
+    FROM productos
+    {where_sql}
+    ORDER BY nombre
+    LIMIT %s OFFSET %s
+""", valores)
 
     productos = cursor.fetchall()
     conn.close()
@@ -231,6 +231,7 @@ def agregar_producto():
 
 
 @app.route('/api/editar_producto', methods=['POST'])
+
 def editar_producto():
     if not verificar_token_admin():
         return jsonify({"mensaje": "Acceso denegado"}), 403
