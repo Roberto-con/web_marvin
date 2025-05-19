@@ -144,6 +144,28 @@ select {
     font-size: clamp(0.65rem, 0.9vw, 0.85rem);
     padding: 4px 8px;
 }
+/* ===== Estilos específicos para carrito.html ===== */
+.carrito-container {
+    margin-top: 60px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.carrito-container h2 {
+    color: #004AAD;
+}
+
+.carrito-container .btn-success {
+    background-color: #004AAD;
+    border-color: #004AAD;
+}
+
+.carrito-container .btn-success:hover {
+    background-color: #00328c;
+}
+
 @media (max-width: 576px) {
     .card {
         height: auto;
