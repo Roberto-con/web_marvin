@@ -118,18 +118,21 @@
         const id = urlParams.get("id");
         document.getElementById("producto-id").value = id;
 
-        fetch("/api/productos")
-            .then(res => res.json())
-            .then(data => {
-                const producto = data.productos.find(p => p.id == id);
-                if (producto) {
-                    document.getElementById("codigo").value = producto.codigo;
-                    document.getElementById("nombre").value = producto.nombre;
-                    document.getElementById("precio").value = producto.precio;
-                    document.getElementById("disponible").checked = producto.disponible;
-                    document.getElementById("sabor").value = producto.sabor || "";
-                }
-            });
+        fetch(`/api/producto/${id}`)
+          .then(res => res.json())
+          .then(producto => {
+            if (producto.error) {
+                alert("Producto no encontrado.");
+                window.location.href = "productos.html";
+                return;
+            }
+
+            document.getElementById("codigo").value = producto.codigo;
+            document.getElementById("nombre").value = producto.nombre;
+            document.getElementById("precio").value = producto.precio;
+            document.getElementById("disponible").checked = producto.disponible;
+            document.getElementById("sabor").value = producto.sabor || "";
+        });
 
         document.getElementById("formulario-editar").addEventListener("submit", async function(e) {
             e.preventDefault();

@@ -572,6 +572,24 @@ def eliminar_producto(usuario_data):
         return jsonify({"mensaje": "Producto eliminado correctamente"}), 200
     except Exception as e:
         return jsonify({"mensaje": f"Error al eliminar producto: {str(e)}"}), 500
+        
+# Para busqueda con paginacion
+@app.route('/api/producto/<int:producto_id>', methods=['GET'])
+def obtener_producto_por_id(producto_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+        FROM productos
+        WHERE id = %s
+    """, (producto_id,))
+    producto = cursor.fetchone()
+    conn.close()
+
+    if producto:
+        return jsonify(producto)
+    else:
+        return jsonify({"error": "Producto no encontrado"}), 404
 
 if __name__ == '__main__':
     try:
