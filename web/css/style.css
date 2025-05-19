@@ -175,10 +175,13 @@ select {
 .index-logo {
     text-align: center;
     margin-top: 40px;
+    margin-bottom: 20px;
 }
 
 .index-logo img {
-    max-width: 180px;
+    max-width: 160px;
+    height: auto;
+    display: inline-block;
 }
 
 .index-card {
@@ -230,5 +233,8 @@ select {
     }
     .product-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+    .index-logo img {
+        max-width: 120px;
     }
 }
