@@ -174,7 +174,7 @@ function enviarPedido() {
         return;
     }
 
-const mensaje = `📦 *Nuevo pedido desde la página web*
+    const mensaje = `📦 *Nuevo pedido desde la página web*
 
 🛒 Productos:
 ${carrito.map(p =>
@@ -188,6 +188,10 @@ ${carrito.map(p =>
 
     const urlWhatsApp = "https://wa.me/59171016195?text=" + encodeURIComponent(mensaje);
 
+    // 👉 abrir WhatsApp inmediatamente tras clic
+    window.open(urlWhatsApp, "_blank");
+
+    // Luego registrar el pedido en el backend
     fetch("/api/pedido", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -200,14 +204,12 @@ ${carrito.map(p =>
     })
     .then(res => res.json())
     .then(() => {
-        window.open(urlWhatsApp, "_blank");
         localStorage.removeItem("carrito");
         setTimeout(() => {
             window.location.href = "productos.html";
         }, 1000);
     });
 }
-
 
 function vaciarCarrito() {
     if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
