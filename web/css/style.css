@@ -254,4 +254,9 @@ select {
     .index-logo img {
         max-width: 240px;
     }
+    .oferta-badge {
+           font-size: 0.75rem;
+           padding: 4px 8px;
+           border-radius: 6px;
+       }
 }
