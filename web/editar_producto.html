@@ -147,6 +147,7 @@
             formData.append("precio", document.getElementById("precio").value);
             formData.append("sabor", document.getElementById("sabor").value);
             formData.append("disponible", document.getElementById("disponible").checked);
+            formData.append("oferta", document.getElementById("oferta").checked);
 
             const imagen = document.getElementById("imagen").files[0];
             if (imagen) {
