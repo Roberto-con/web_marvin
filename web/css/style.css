@@ -179,7 +179,7 @@ select {
 }
 
 .index-logo img {
-    max-width: 480px;
+    max-width: 240px;
     height: auto;
     display: inline-block;
 }
@@ -235,6 +235,6 @@ select {
         grid-template-columns: repeat(3, 1fr);
     }
     .index-logo img {
-        max-width: 360px;
+        max-width: 180px;
     }
 }
