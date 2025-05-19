@@ -95,11 +95,13 @@ h1, h2, h3 {
     left: 10px;
     background-color: #28a745;
     color: white;
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-weight: bold;
+    font-size: 1rem;         /* ⬅️ más grande */
+    padding: 6px 12px;        /* ⬅️ más espacio interno */
+    border-radius: 10px;
+    font-weight: 600;
     z-index: 10;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.15); /* opcional para destacarla más */
+    text-transform: uppercase;              /* opcional: OFERTA en mayúsculas */
 }
 
 /* Toast */
