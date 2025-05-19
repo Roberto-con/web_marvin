@@ -127,6 +127,7 @@ select {
     gap: 1rem;
 }
 .product-card {
+    position: relative; /* necesario para que la badge se posicione */
     height: 100%;
     display: flex;
 }

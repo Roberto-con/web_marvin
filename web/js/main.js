@@ -72,8 +72,11 @@ function mostrarProductos(productos) {
             contenidoBoton = `<span class="badge bg-danger">Agotado</span>`;
         }
 
-        card.innerHTML += `
-            <div class="card h-100">
+        card.innerHTML = `
+            <div class="card h-100 position-relative">
+                ${prod.oferta == 1 || prod.oferta === true ? `
+                    <span class="oferta-badge">Oferta</span>
+                ` : ""}
                 <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <h5 class="card-title">${prod.nombre} - ${prod.sabor}</h5>
@@ -83,7 +86,6 @@ function mostrarProductos(productos) {
                 </div>
             </div>
         `;
-
         contenedor.appendChild(card);
     });
 }
