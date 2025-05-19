@@ -166,8 +166,13 @@ function enviarPedido() {
     if (carrito.length === 0) return;
 
     const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-    const nombre_cliente = document.getElementById("nombreCliente")?.value || "";
-    const telefono_cliente = document.getElementById("telefonoCliente")?.value || "";
+    const nombre_cliente = document.getElementById("nombreCliente")?.value.trim();
+    const telefono_cliente = document.getElementById("telefonoCliente")?.value.trim();
+
+    if (!nombre_cliente || !telefono_cliente) {
+        alert("⚠️ Por favor, completa tu nombre y teléfono antes de realizar el pedido.");
+        return;
+    }
 
 const mensaje = `📦 *Nuevo pedido desde la página web*
 
