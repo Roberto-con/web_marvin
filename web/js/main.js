@@ -62,7 +62,7 @@ function mostrarProductos(productos) {
             `;
         } else if (prod.disponible) {
             contenidoBoton = `
-                <button class="btn btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio})">
+                <button class="btn btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
                     Agregar al carrito
                 </button>
             `;
@@ -110,19 +110,20 @@ function guardarCarrito(carrito) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-function agregarAlCarrito(id, nombre, precio) {
+function agregarAlCarrito(id, nombre, precio, sabor = "-") {
     const carrito = obtenerCarrito();
-    const item = carrito.find(p => p.id === id);
+    const item = carrito.find(p => p.id === id && p.sabor === sabor); // importante: comparar también sabor
+
     if (item) {
         item.cantidad += 1;
     } else {
-        carrito.push({ id, nombre, precio, cantidad: 1 });
+        carrito.push({ id, nombre, precio, sabor, cantidad: 1 });
     }
+
     guardarCarrito(carrito);
     mostrarToast("Producto agregado al carrito");
     actualizarContadorCarrito();
 }
-
 function actualizarContadorCarrito() {
     const carrito = obtenerCarrito();
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
