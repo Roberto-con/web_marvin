@@ -6,7 +6,7 @@ import io
 import bcrypt
 import os
 import jwt
-import datetime
+
 import json
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -259,7 +259,7 @@ def editar_producto():
             resultado = cloudinary.uploader.upload(
                 imagen,
                 folder="productos_delizia",
-                public_id=f"{codigo or nombre}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}",
+                public_id=f"{codigo or nombre}_{datetime.now().strftime('%Y%m%d%H%M%S')}",
                 resource_type="image"
             )
             imagen_url = resultado.get("secure_url")
@@ -384,8 +384,8 @@ def obtener_token_actual():
             print("[ERROR] Token o fecha inválidos")
             return jsonify({"mensaje": "Token inválido"}), 400
 
-        creado_en = datetime.datetime.fromisoformat(creado_en_str)
-        ahora = datetime.datetime.utcnow()
+        creado_en = datetime.fromisoformat(creado_en_str)
+        ahora = datetime.utcnow()
         expiracion = creado_en + datetime.timedelta(minutes=45)
 
         if ahora >= expiracion:
@@ -394,7 +394,7 @@ def obtener_token_actual():
             with open(token_path, "r") as f:
                 info = json.load(f)
             token = info.get("token")
-            creado_en = datetime.datetime.fromisoformat(info.get("creado_en"))
+            creado_en = datetime.fromisoformat(info.get("creado_en"))
             expiracion = creado_en + datetime.timedelta(minutes=45)
 
         restante = int((expiracion - ahora).total_seconds())
