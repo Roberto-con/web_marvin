@@ -59,6 +59,76 @@
                 }
             }
         }
+
+        function filtrarPedidos() {
+            const fechaInicio = document.getElementById("fecha-inicio").value;
+            const fechaFin = document.getElementById("fecha-fin").value;
+
+            let url = "/api/pedidos";
+            const params = [];
+
+            if (fechaInicio) params.push(`fecha_inicio=${fechaInicio}`);
+            if (fechaFin) params.push(`fecha_fin=${fechaFin}`);
+
+            if (params.length > 0) {
+                url += "?" + params.join("&");
+            }
+
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            .then(res => res.json())
+            .then(mostrarPedidos)
+            .catch(err => {
+                document.getElementById("tabla-pedidos").innerHTML = `
+                    <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudieron filtrar los pedidos</td></tr>
+                `;
+                console.error(err);
+            });
+        }
+
+        function mostrarPedidos(pedidos) {
+            const tbody = document.getElementById("tabla-pedidos");
+            tbody.innerHTML = "";
+
+            pedidos.forEach((pedido, index) => {
+                const fila = document.createElement("tr");
+                const productosTexto = JSON.parse(pedido.productos_json)
+                    .map(p => `📌 <strong>${p.nombre}</strong> — ${p.cantidad} und. — ${p.precio} Bs`)
+                    .join("<br>");
+                fila.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="text-start">${productosTexto}</td>
+                    <td><strong>${pedido.total} Bs</strong></td>
+                    <td>${pedido.nombre_cliente || "-"}</td>
+                    <td>${pedido.telefono_cliente || "-"}</td>
+                    <td>${new Date(pedido.fecha).toLocaleString()}</td>
+                `;
+                tbody.appendChild(fila);
+            });
+        }
+
+        // Cargar pedidos al iniciar
+        fetch("/api/pedidos", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al obtener los pedidos");
+            return res.json();
+        })
+        .then(mostrarPedidos)
+        .catch(err => {
+            document.getElementById("tabla-pedidos").innerHTML = `
+                <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
+            `;
+            console.error(err);
+        });
     </script>
 </head>
 <body>
@@ -66,6 +136,19 @@
         <h2 class="mb-4 text-center">📦 Pedidos Realizados</h2>
         <div class="text-end mb-3">
             <button class="btn btn-danger" onclick="limpiarPedidos()">🧹 Limpiar pedidos</button>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label for="fecha-inicio" class="form-label">Desde:</label>
+                <input type="date" class="form-control" id="fecha-inicio">
+            </div>
+            <div class="col-md-4">
+                <label for="fecha-fin" class="form-label">Hasta:</label>
+                <input type="date" class="form-control" id="fecha-fin">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="filtrarPedidos()">Filtrar</button>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered align-middle text-center">
@@ -84,43 +167,5 @@
             </table>
         </div>
     </div>
-
-    <script>
-        fetch("/api/pedidos", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Error al obtener los pedidos");
-            return res.json();
-        })
-        .then(pedidos => {
-            const tbody = document.getElementById("tabla-pedidos");
-            pedidos.forEach((pedido, index) => {
-                const fila = document.createElement("tr");
-                const productosTexto = JSON.parse(pedido.productos_json)
-                    .map(p => `📌 <strong>${p.nombre}</strong> — ${p.cantidad} und. — ${p.precio} Bs`)
-                    .join("<br>");
-                fila.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td class="text-start">${productosTexto}</td>
-                    <td><strong>${pedido.total} Bs</strong></td>
-                    <td>${pedido.nombre_cliente || "-"}</td>
-                    <td>${pedido.telefono_cliente || "-"}</td>
-                    <td>${new Date(pedido.fecha).toLocaleString()}</td>
-                `;
-                tbody.appendChild(fila);
-            });
-        })
-        .catch(err => {
-            document.getElementById("tabla-pedidos").innerHTML = `
-                <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
-            `;
-            console.error(err);
-        });
-    </script>
-    <script src="js/session.js"></script>
 </body>
 </html>

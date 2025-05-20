@@ -297,9 +297,32 @@ def obtener_pedidos():
     except:
         return jsonify({"mensaje": "Token inválido"}), 401
 
+    # Leer filtros de fechas desde la URL
+    fecha_inicio = request.args.get("fecha_inicio")
+    fecha_fin = request.args.get("fecha_fin")
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT productos_json, total, nombre_cliente, telefono_cliente, fecha FROM pedidos ORDER BY fecha DESC")
+
+    condiciones = []
+    valores = []
+
+    if fecha_inicio:
+        condiciones.append("fecha >= %s")
+        valores.append(fecha_inicio)
+    if fecha_fin:
+        condiciones.append("fecha <= %s")
+        valores.append(fecha_fin)
+
+    where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
+
+    cursor.execute(f"""
+        SELECT productos_json, total, nombre_cliente, telefono_cliente, fecha
+        FROM pedidos
+        {where_sql}
+        ORDER BY fecha DESC
+    """, valores)
+
     pedidos = cursor.fetchall()
     conn.close()
     return jsonify(pedidos)

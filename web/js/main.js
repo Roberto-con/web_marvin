@@ -294,3 +294,49 @@ if (inputBusqueda) {
         }, 200); // Espera 400ms después de la última tecla
     });
 }
+
+function filtrarPedidos() {
+    const fechaInicio = document.getElementById("fecha-inicio").value;
+    const fechaFin = document.getElementById("fecha-fin").value;
+
+    let url = "/api/pedidos";
+    const params = [];
+
+    if (fechaInicio) params.push(`fecha_inicio=${fechaInicio}`);
+    if (fechaFin) params.push(`fecha_fin=${fechaFin}`);
+
+    if (params.length > 0) {
+        url += "?" + params.join("&");
+    }
+
+    fetch(url)
+        .then(res => res.json())
+        .then(mostrarPedidos)
+        .catch(err => {
+            console.error("Error al filtrar pedidos:", err);
+            document.getElementById("tabla-pedidos").innerHTML = `
+                <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudieron filtrar los pedidos</td></tr>
+            `;
+        });
+}
+
+function mostrarPedidos(pedidos) {
+    const tbody = document.getElementById("tabla-pedidos");
+    tbody.innerHTML = "";
+
+    pedidos.forEach((pedido, index) => {
+        const fila = document.createElement("tr");
+        const productosTexto = JSON.parse(pedido.productos_json)
+            .map(p => `📌 <strong>${p.nombre}</strong> — ${p.cantidad} und. — ${p.precio} Bs`)
+            .join("<br>");
+        fila.innerHTML = `
+            <td>${index + 1}</td>
+            <td class="text-start">${productosTexto}</td>
+            <td><strong>${pedido.total} Bs</strong></td>
+            <td>${pedido.nombre_cliente || "-"}</td>
+            <td>${pedido.telefono_cliente || "-"}</td>
+            <td>${new Date(pedido.fecha).toLocaleString()}</td>
+        `;
+        tbody.appendChild(fila);
+    });
+}
