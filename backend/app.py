@@ -17,6 +17,12 @@ import threading
 from functools import wraps
 from flask import send_file
 import tempfile
+from datetime import datetime, timedelta
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 load_dotenv()
 import cloudinary
@@ -622,6 +628,85 @@ def obtener_producto_por_id(producto_id):
         return jsonify(producto)
     else:
         return jsonify({"error": "Producto no encontrado"}), 404
+
+@app.route('/api/pedidos/reporte', methods=['GET'])
+def generar_reporte_mensual():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        if decoded["rol"] != "admin":
+            return jsonify({"mensaje": "No autorizado"}), 403
+    except:
+        return jsonify({"mensaje": "Token inválido"}), 401
+
+    # Obtener primer y último día del mes actual
+    ahora = datetime.utcnow()
+    inicio_mes = ahora.replace(day=1).strftime("%Y-%m-%d")
+    siguiente_mes = (ahora.replace(day=28) + timedelta(days=4)).replace(day=1)
+    fin_mes = siguiente_mes.strftime("%Y-%m-%d")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT productos_json, total, nombre_cliente, telefono_cliente, fecha
+        FROM pedidos
+        WHERE fecha >= %s AND fecha < %s
+        ORDER BY fecha ASC
+    """, (inicio_mes, fin_mes))
+    pedidos = cursor.fetchall()
+    conn.close()
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+    elementos = []
+    estilos = getSampleStyleSheet()
+
+    elementos.append(Paragraph("Reporte de pedidos del mes actual", estilos["Heading2"]))
+    elementos.append(Spacer(1, 12))
+
+    data = [[
+        "#", "Producto", "Sabor", "Unidades", "Precio Unit.", "Subtotal", "Cliente", "Teléfono", "Fecha"
+    ]]
+
+    contador = 1
+    for pedido in pedidos:
+        productos = json.loads(pedido["productos_json"])
+        for prod in productos:
+            subtotal = prod["cantidad"] * prod["precio"]
+            data.append([
+                contador,
+                prod["nombre"],
+                prod.get("sabor", "-"),
+                prod["cantidad"],
+                f"{prod['precio']} Bs",
+                f"{subtotal:.2f} Bs",
+                pedido.get("nombre_cliente", "-"),
+                pedido.get("telefono_cliente", "-"),
+                datetime.strptime(str(pedido["fecha"]), "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y %H:%M")
+            ])
+            contador += 1
+
+    tabla = Table(data, repeatRows=1)
+    tabla.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#004AAD")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+        ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
+    ]))
+
+    elementos.append(tabla)
+    doc.build(elementos)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="reporte_pedidos_mes_actual.pdf",
+        mimetype="application/pdf"
+    )
 
 if __name__ == '__main__':
     try:

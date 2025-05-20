@@ -340,3 +340,29 @@ function mostrarPedidos(pedidos) {
         tbody.appendChild(fila);
     });
 }
+
+function generarReporteMensual() {
+    fetch("/api/pedidos/reporte", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Error al generar el reporte");
+        return res.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "reporte_pedidos_mes_actual.pdf";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    })
+    .catch(err => {
+        alert("❌ No se pudo generar el reporte.");
+        console.error(err);
+    });
+}
