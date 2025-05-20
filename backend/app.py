@@ -386,7 +386,7 @@ def obtener_token_actual():
 
         creado_en = datetime.fromisoformat(creado_en_str)
         ahora = datetime.utcnow()
-        expiracion = creado_en + datetime.timedelta(minutes=45)
+        expiracion = creado_en + timedelta(minutes=45)
 
         if ahora >= expiracion:
             print("[INFO] Token expirado, regenerando...")
