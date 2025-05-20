@@ -342,7 +342,7 @@ def generar_token():
 
 def guardar_token():
     token = generar_token()
-    creado_en = datetime.datetime.utcnow().isoformat()
+    creado_en = datetime.utcnow().isoformat()
     with open("token_invitado.json", "w") as f:
         json.dump({"token": token, "creado_en": creado_en}, f)
 
