@@ -703,6 +703,10 @@ def generar_reporte_mensual():
     ]]
 
     contador = 1
+    def ajustar_fecha_a_bolivia(fecha_str):
+        fecha_utc = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S")
+        fecha_bolivia = fecha_utc - timedelta(hours=4)
+        return fecha_bolivia.strftime("%d/%m/%Y %H:%M")
     for pedido in pedidos:
         productos = json.loads(pedido["productos_json"])
         for prod in productos:
@@ -716,7 +720,7 @@ def generar_reporte_mensual():
                 f"{subtotal:.2f} Bs",
                 pedido.get("nombre_cliente", "-"),
                 pedido.get("telefono_cliente", "-"),
-                datetime.strptime(str(pedido["fecha"]), "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y %H:%M")
+                ajustar_fecha_a_bolivia(str(pedido["fecha"]))
             ])
             contador += 1
 
