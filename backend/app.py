@@ -673,7 +673,6 @@ def generar_reporte_mensual():
     except:
         return jsonify({"mensaje": "Token inválido"}), 401
 
-    # Obtener primer y último día del mes actual
     ahora = datetime.utcnow()
     inicio_mes = ahora.replace(day=1).strftime("%Y-%m-%d")
     siguiente_mes = (ahora.replace(day=28) + timedelta(days=4)).replace(day=1)
@@ -707,10 +706,27 @@ def generar_reporte_mensual():
         fecha_utc = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S")
         fecha_bolivia = fecha_utc - timedelta(hours=4)
         return fecha_bolivia.strftime("%d/%m/%Y %H:%M")
+
+    from collections import defaultdict
+    total_pedidos = 0
+    total_unidades = 0
+    total_facturado = 0.0
+    clientes = set()
+    pedidos_por_dia = defaultdict(int)
+
     for pedido in pedidos:
+        total_pedidos += 1
+        clientes.add(pedido.get("nombre_cliente", "-"))
+        fecha_solo_dia = str(pedido["fecha"])[:10]
+        pedidos_por_dia[fecha_solo_dia] += 1
+
         productos = json.loads(pedido["productos_json"])
         for prod in productos:
-            subtotal = prod["cantidad"] * prod["precio"]
+            cantidad = prod["cantidad"]
+            subtotal = cantidad * prod["precio"]
+            total_unidades += cantidad
+            total_facturado += subtotal
+
             data.append([
                 contador,
                 prod["nombre"],
@@ -734,8 +750,43 @@ def generar_reporte_mensual():
         ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
         ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
     ]))
-
     elementos.append(tabla)
+
+    promedio = total_facturado / total_pedidos if total_pedidos else 0
+    dia_max_pedidos = max(pedidos_por_dia, key=pedidos_por_dia.get)
+    dia_max_pedidos_fmt = datetime.strptime(dia_max_pedidos, "%Y-%m-%d").strftime("%d/%m/%Y")
+
+    resumen_data = [[
+        "Total pedidos",
+        "Productos vendidos",
+        "Clientes únicos",
+        "Total facturado",
+        "Promedio por pedido",
+        "Día con más pedidos"
+    ], [
+        str(total_pedidos),
+        str(total_unidades),
+        str(len(clientes)),
+        f"{total_facturado:.2f} Bs",
+        f"{promedio:.2f} Bs",
+        dia_max_pedidos_fmt
+    ]]
+
+    resumen_tabla = Table(resumen_data)
+    resumen_tabla.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 10),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+        ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
+    ]))
+
+    elementos.append(Spacer(1, 24))
+    elementos.append(Paragraph("Resumen del mes", estilos["Heading3"]))
+    elementos.append(resumen_tabla)
+
     doc.build(elementos)
     buffer.seek(0)
 
