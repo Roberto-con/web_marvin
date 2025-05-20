@@ -81,9 +81,8 @@ def token_requerido(f):
             return jsonify({"mensaje": "Token inválido"}), 403
         return f(datos, *args, **kwargs)
     return decorador
-
+    
 @app.route('/api/login', methods=['POST'])
-
 def login():
     data = request.get_json()
     usuario = data.get("usuario", "").strip()
@@ -98,11 +97,11 @@ def login():
                     token = jwt.encode({
                         "usuario": "invitado",
                         "rol": rol,
-                        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+                        "exp": datetime.utcnow() + timedelta(hours=3)
                     }, SECRET_KEY, algorithm="HS256")
                     return jsonify({"token": token, "rol": rol})
-        except:
-            return jsonify({"mensaje": "Error al verificar token dinámico"}), 500
+        except Exception as e:
+            return jsonify({"mensaje": f"Error al verificar token dinámico: {str(e)}"}), 500
 
     # Login desde base de datos MySQL
     conn = get_db_connection()
@@ -115,7 +114,7 @@ def login():
         token = jwt.encode({
             "usuario": user["usuario"],
             "rol": user["rol"],
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+            "exp": datetime.utcnow() + timedelta(hours=3)
         }, SECRET_KEY, algorithm="HS256")
         return jsonify({"token": token, "rol": user["rol"]})
     else:
