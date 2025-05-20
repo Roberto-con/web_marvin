@@ -501,7 +501,7 @@ def exportar_productos(usuario_data):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT codigo, nombre, precio, tipo, sabor, cantidad, imagen_url FROM productos")
+        cursor.execute("SELECT codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible FROM productos")
         productos = cursor.fetchall()
         conn.close()
 
