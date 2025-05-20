@@ -355,7 +355,6 @@ def iniciar_token_automatico():
     guardar_token()
     threading.Timer(2700, iniciar_token_automatico).start()
 
-iniciar_token_automatico()
 
 @app.route('/api/token')
 def obtener_token_actual():
@@ -364,10 +363,14 @@ def obtener_token_actual():
         return jsonify({"mensaje": "No autorizado"}), 403
 
     try:
-        if not os.path.exists("token_invitado.json"):
-            return jsonify({"mensaje": "Token no generado aún"}), 404
+        token_path = "token_invitado.json"
 
-        with open("token_invitado.json", "r") as f:
+        # Si no existe, crearlo inmediatamente
+        if not os.path.exists(token_path):
+            print("[INFO] Token no existe, generando uno nuevo...")
+            guardar_token()
+
+        with open(token_path, "r") as f:
             info = json.load(f)
 
         token = info.get("token")
@@ -379,6 +382,17 @@ def obtener_token_actual():
         creado_en = datetime.datetime.fromisoformat(creado_en_str)
         ahora = datetime.datetime.utcnow()
         expiracion = creado_en + datetime.timedelta(minutes=45)
+
+        # Si el token expiró, generar uno nuevo
+        if ahora >= expiracion:
+            print("[INFO] Token expirado, generando uno nuevo...")
+            guardar_token()
+            with open(token_path, "r") as f:
+                info = json.load(f)
+            token = info.get("token")
+            creado_en = datetime.datetime.fromisoformat(info.get("creado_en"))
+            expiracion = creado_en + datetime.timedelta(minutes=45)
+
         restante = int((expiracion - ahora).total_seconds())
         restante = max(0, restante)
 
@@ -387,11 +401,10 @@ def obtener_token_actual():
             "restante": restante
         })
 
-    except json.JSONDecodeError:
-        return jsonify({"mensaje": "token_invitado.json malformado"}), 500
     except Exception as e:
         print(f"[ERROR TOKEN] {e}")
         return jsonify({"mensaje": "Error interno al leer el token"}), 500
+        
 @app.route('/api/cambiar_contrasena', methods=['POST'])
 def cambiar_contrasena():
     auth_header = request.headers.get("Authorization", "")
