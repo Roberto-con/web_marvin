@@ -295,7 +295,6 @@ def serve_static(path):
 from datetime import datetime, timedelta
 
 @app.route('/api/pedidos', methods=['GET'])
-
 def obtener_pedidos():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     try:
@@ -316,17 +315,21 @@ def obtener_pedidos():
     valores = []
 
     if fecha_inicio:
-        condiciones.append("fecha >= %s")
-        valores.append(fecha_inicio)
+        try:
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d") + timedelta(hours=4)
+            condiciones.append("fecha >= %s")
+            valores.append(fecha_inicio_dt)
+        except ValueError:
+            return jsonify({"mensaje": "Formato de fecha inválido en fecha_inicio"}), 400
 
     if fecha_fin:
         try:
-            # Agregar un día para incluir todo el día seleccionado
-            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)
+            # Incluir todo el día seleccionado (hasta las 23:59:59 Bolivia = 03:59:59 UTC del día siguiente)
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1, hours=4)
             condiciones.append("fecha < %s")
-            valores.append(fecha_fin_dt.strftime("%Y-%m-%d"))
+            valores.append(fecha_fin_dt)
         except ValueError:
-            return jsonify({"mensaje": "Formato de fecha inválido"}), 400
+            return jsonify({"mensaje": "Formato de fecha inválido en fecha_fin"}), 400
 
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
 
