@@ -287,6 +287,8 @@ def serve_images(filename):
 def serve_static(path):
     return send_from_directory(app.static_folder, path)
 
+from datetime import datetime, timedelta
+
 @app.route('/api/pedidos', methods=['GET'])
 def obtener_pedidos():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -310,9 +312,15 @@ def obtener_pedidos():
     if fecha_inicio:
         condiciones.append("fecha >= %s")
         valores.append(fecha_inicio)
+
     if fecha_fin:
-        condiciones.append("fecha <= %s")
-        valores.append(fecha_fin)
+        try:
+            # Agregar un día para incluir todo el día seleccionado
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)
+            condiciones.append("fecha < %s")
+            valores.append(fecha_fin_dt.strftime("%Y-%m-%d"))
+        except ValueError:
+            return jsonify({"mensaje": "Formato de fecha inválido"}), 400
 
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
 
@@ -326,7 +334,7 @@ def obtener_pedidos():
     pedidos = cursor.fetchall()
     conn.close()
     return jsonify(pedidos)
-
+    
 # Token dinámico con tiempo restante
 def generar_token():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
