@@ -358,34 +358,38 @@ def iniciar_token_automatico():
 
 @app.route('/api/token')
 def obtener_token_actual():
+    print("[INFO] Petición GET /api/token recibida")
+
     datos = verificar_token_admin()
     if not datos:
+        print("[ERROR] No autorizado")
         return jsonify({"mensaje": "No autorizado"}), 403
 
     try:
         token_path = "token_invitado.json"
 
-        # Si no existe, crearlo inmediatamente
         if not os.path.exists(token_path):
-            print("[INFO] Token no existe, generando uno nuevo...")
+            print("[INFO] Archivo no existe, generando...")
             guardar_token()
 
+        print("[INFO] Leyendo token...")
         with open(token_path, "r") as f:
             info = json.load(f)
 
+        print("[INFO] Contenido del token:", info)
         token = info.get("token")
         creado_en_str = info.get("creado_en")
 
         if not token or not creado_en_str:
+            print("[ERROR] Token o fecha inválidos")
             return jsonify({"mensaje": "Token inválido"}), 400
 
         creado_en = datetime.datetime.fromisoformat(creado_en_str)
         ahora = datetime.datetime.utcnow()
         expiracion = creado_en + datetime.timedelta(minutes=45)
 
-        # Si el token expiró, generar uno nuevo
         if ahora >= expiracion:
-            print("[INFO] Token expirado, generando uno nuevo...")
+            print("[INFO] Token expirado, regenerando...")
             guardar_token()
             with open(token_path, "r") as f:
                 info = json.load(f)
@@ -396,13 +400,15 @@ def obtener_token_actual():
         restante = int((expiracion - ahora).total_seconds())
         restante = max(0, restante)
 
+        print(f"[OK] Token válido: {token}, restante: {restante}s")
+
         return jsonify({
             "token": token,
             "restante": restante
         })
 
     except Exception as e:
-        print(f"[ERROR TOKEN] {e}")
+        print(f"[ERROR FATAL EN TOKEN]: {e}")
         return jsonify({"mensaje": "Error interno al leer el token"}), 500
         
 @app.route('/api/cambiar_contrasena', methods=['POST'])
