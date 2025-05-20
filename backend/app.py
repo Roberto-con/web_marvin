@@ -290,6 +290,7 @@ def serve_static(path):
 from datetime import datetime, timedelta
 
 @app.route('/api/pedidos', methods=['GET'])
+
 def obtener_pedidos():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     try:
