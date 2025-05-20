@@ -364,22 +364,34 @@ def obtener_token_actual():
         return jsonify({"mensaje": "No autorizado"}), 403
 
     try:
+        if not os.path.exists("token_invitado.json"):
+            return jsonify({"mensaje": "Token no generado aún"}), 404
+
         with open("token_invitado.json", "r") as f:
             info = json.load(f)
-            token = info.get("token")
-            creado_en = datetime.datetime.fromisoformat(info.get("creado_en"))
-            ahora = datetime.datetime.utcnow()
-            expiracion = creado_en + datetime.timedelta(minutes=45)
-            restante = int((expiracion - ahora).total_seconds())
-            restante = max(0, restante)
 
-            return jsonify({
-                "token": token,
-                "restante": restante
-            })
+        token = info.get("token")
+        creado_en_str = info.get("creado_en")
+
+        if not token or not creado_en_str:
+            return jsonify({"mensaje": "Token inválido"}), 400
+
+        creado_en = datetime.datetime.fromisoformat(creado_en_str)
+        ahora = datetime.datetime.utcnow()
+        expiracion = creado_en + datetime.timedelta(minutes=45)
+        restante = int((expiracion - ahora).total_seconds())
+        restante = max(0, restante)
+
+        return jsonify({
+            "token": token,
+            "restante": restante
+        })
+
+    except json.JSONDecodeError:
+        return jsonify({"mensaje": "token_invitado.json malformado"}), 500
     except Exception as e:
-        return jsonify({"mensaje": "Error al leer el token"}), 500
-
+        print(f"[ERROR TOKEN] {e}")
+        return jsonify({"mensaje": "Error interno al leer el token"}), 500
 @app.route('/api/cambiar_contrasena', methods=['POST'])
 def cambiar_contrasena():
     auth_header = request.headers.get("Authorization", "")
