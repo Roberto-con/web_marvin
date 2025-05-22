@@ -213,7 +213,46 @@ select {
 .index-card h2 {
     color: #004AAD;
 }
+/* ===== Estilos específicos para editar_producto.html ===== */
 
+.container-editar {
+    max-width: 600px;
+    width: 100%;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.btn-warning {
+    background-color: #0022e5;
+    border-color: #0022e5;
+    color: #fff !important;
+}
+
+.btn-warning:hover {
+    background-color: #b6001e;
+}
+/* ===== Estilos específicos para agregar_producto.html ===== */
+
+.container-agregar {
+    margin-top: 50px;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.btn-success {
+    background-color: #004AAD;
+    border-color: #004AAD;
+}
+
+.btn-success:hover {
+    background-color: #00328c;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
