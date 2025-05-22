@@ -298,4 +298,28 @@ select {
            padding: 4px 8px;
            border-radius: 6px;
        }
+    .container-editar,
+    .container-agregar {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 100%;
+        box-shadow: none;
+        border-radius: 8px;
+    }
+
+    .btn-success,
+    .btn-warning {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    input.form-control,
+    select.form-control {
+        font-size: 0.9rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
 }
