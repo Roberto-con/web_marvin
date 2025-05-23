@@ -226,12 +226,7 @@
             document.getElementById("precio").value = producto.precio;
             document.getElementById("sabor").value = producto.sabor || "";
             document.getElementById("disponible").checked = producto.disponible;
-            document.getElementById("oferta").checked = (
-                producto.oferta === true ||
-                producto.oferta === 1 ||
-                producto.oferta === "1" ||
-                producto.oferta === "true"
-            );
+            document.getElementById("oferta").checked = producto.oferta;
             new bootstrap.Modal(document.getElementById("modalEditarProducto")).show();
           });
     }
