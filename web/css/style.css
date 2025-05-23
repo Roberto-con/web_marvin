@@ -347,9 +347,9 @@ select {
     }
 
     #menu-dinamico .btn {
-        font-size: 0.68rem;
-        padding: 4px 6px;
-        min-width: 82px;
+        font-size: 0.34rem;
+        padding: 2px 3px;
+        min-width: 55px;
     }
     .navbar-brand img {
         max-height: 36px;
