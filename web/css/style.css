@@ -258,29 +258,29 @@ select {
         height: auto;
         min-height: unset;
     }
-
+    
     .card-img-top {
-           height: 120px;
-           object-fit: contain;
-           padding: 0.5rem;
-       }
-
+        height: 120px;
+        object-fit: contain;
+        padding: 0.5rem;
+    }
+    
     .card-title {
         font-size: 0.65rem;
         line-height: 1.1;
         margin-bottom: 0.3rem;
     }
-
+    
     .card-text {
         font-size: 0.55rem;
         line-height: 1.1;
     }
-
+    
     .btn {
         font-size: 0.55rem;
         padding: 3px 6px;
     }
-
+    
     .card-body {
         padding: 0.6rem;
         display: flex;
@@ -294,10 +294,10 @@ select {
         max-width: 240px;
     }
     .oferta-badge {
-           font-size: 0.45rem;
-           padding: 4px 8px;
-           border-radius: 6px;
-       }
+        font-size: 0.45rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
     .container-editar,
     .container-agregar {
         margin: 20px auto;
@@ -306,37 +306,41 @@ select {
         box-shadow: none;
         border-radius: 8px;
     }
-
+    
     .btn-success,
     .btn-warning {
         font-size: 0.85rem;
         padding: 8px 12px;
     }
-
+    
     input.form-control,
     select.form-control {
         font-size: 0.9rem;
     }
-
+    
     h2 {
         font-size: 1.2rem;
         text-align: center;
     }
     .navbar {
-        padding: 0.5rem 1rem;
-        flex-direction: column !important;
-        align-items: flex-start !important;
+        padding: 0.4rem 0.8rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
-
+    
     #menu-dinamico {
-        flex-direction: column !important;
-        gap: 0.5rem !important;
-        align-items: stretch !important;
-        width: 100%;
+        gap: 0.3rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
     }
-
+    
+    #menu-dinamico .btn {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+    
     .navbar-brand img {
-        max-width: 140px;
-        height: auto;
+        max-height: 36px;
+        width: auto;
     }
 }
