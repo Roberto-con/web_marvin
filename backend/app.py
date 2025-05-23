@@ -236,7 +236,6 @@ def agregar_producto():
 
 
 @app.route('/api/editar_producto', methods=['POST'])
-
 def editar_producto():
     if not verificar_token_admin():
         return jsonify({"mensaje": "Acceso denegado"}), 403
@@ -245,14 +244,16 @@ def editar_producto():
     codigo = request.form.get("codigo")
     nombre = request.form.get("nombre")
     precio = request.form.get("precio")
-    sabor = request.form.get("sabor")  # <--- SE AÑADE ESTE CAMPO
+    sabor = request.form.get("sabor")
+
     disponible = request.form.get("disponible", "true").lower() == "true"
+    oferta = request.form.get("oferta", "false").lower() in ["true", "1", "on"]
+
     imagen = request.files.get("imagen")
+    imagen_url = None
 
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    imagen_url = None
 
     if imagen:
         try:
@@ -267,19 +268,19 @@ def editar_producto():
             return jsonify({"mensaje": f"Error al subir imagen: {str(e)}"}), 500
 
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, imagen_url=%s, disponible=%s WHERE id=%s",
-            (codigo, nombre, precio, sabor, imagen_url, disponible, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, imagen_url=%s, disponible=%s, oferta=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, imagen_url, disponible, oferta, id_producto)
         )
     else:
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, disponible=%s WHERE id=%s",
-            (codigo, nombre, precio, sabor, disponible, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, disponible=%s, oferta=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, disponible, oferta, id_producto)
         )
 
     conn.commit()
     conn.close()
     return jsonify({"mensaje": "Producto actualizado correctamente"}), 200
-
+    
 @app.route('/')
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
