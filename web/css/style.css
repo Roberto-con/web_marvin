@@ -322,4 +322,21 @@ select {
         font-size: 1.2rem;
         text-align: center;
     }
+    .navbar {
+        padding: 0.5rem 1rem;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    #menu-dinamico {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        align-items: stretch !important;
+        width: 100%;
+    }
+
+    .navbar-brand img {
+        max-width: 140px;
+        height: auto;
+    }
 }
