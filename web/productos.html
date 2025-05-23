@@ -2,15 +2,190 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Cache-Control" content="no-store" />
-    <title>Productos - Delizia</title>
+    <title>Catálogo de Productos - Delizia</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    
+    <script>
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
+
+        if (!token || !rol) {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || performance.navigation.type === 2) {
+                if (!localStorage.getItem("token")) {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+    </script>
 </head>
 <body>
-    <!-- navbar y otros elementos aquí... (omitido por brevedad) -->
-    <!-- Modal de edición flotante integrado -->
+    <nav class="navbar bg-white border-bottom sticky-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-3">
+            <a class="navbar-brand" href="index.html">
+                <img src="https://res.cloudinary.com/deu5lzznt/image/upload/v1747175841/logo_tp5pzs.png" alt="Delizia" height="45">
+            </a>
+            <div class="d-flex gap-2" id="menu-dinamico"></div>
+        </div>
+    </nav>
+    
+    <!-- Ancla para scroll -->
+    <div id="scroll-top-productos"></div>
+
+    <div class="container-fluid mt-4 px-3" style="max-width: 100%;">
+        <div class="row mb-3">
+            <div class="col-12">
+              <form id="form-busqueda" class="d-flex">
+                <input type="search" id="busqueda" class="form-control me-2" placeholder="Buscar productos...">
+                <button type="submit" class="btn btn-outline-primary">Buscar</button>
+              </form>
+            </div>
+        </div>
+        <div class="mb-3 text-center">
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Todos">Todos</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Helado">Helados</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Lacteos">Lácteos</button>
+          <button class="btn btn-outline-primary mx-1 filtro-tipo" data-tipo="Bebidas">Bebidas</button>
+        </div>
+        <div class="product-grid" id="product-list">
+            <!-- Productos se insertan aquí con JavaScript -->
+        </div>
+        <!-- Contenedor para botones de paginación -->
+        <div id="paginacion" class="mt-4 text-center"></div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        function cerrarSesion() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            window.location.href = "login.html";
+        }
+
+        const menu = document.getElementById("menu-dinamico");
+
+        if (rol === "admin") {
+            menu.innerHTML = `
+                <button class="btn btn-outline-danger" onclick="mostrarConfirmacionEliminar()">⚠️ Eliminar Base de Datos</button>
+                <a class="btn btn-outline-primary" href="productos.html">Productos</a>
+                <a class="btn btn-outline-primary" href="carrito.html">
+                    Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
+                </a>
+                <button class="btn btn-outline-success" onclick="exportarExcel()">📤 Exportar Excel</button>
+                <a class="btn btn-primary" href="agregar_producto.html">+ Agregar Producto</a>
+                <a class="btn btn-outline-primary" href="pedidos.html">📦 Pedidos</a>
+                <a class="btn btn-outline-primary" href="token.html">🔐 Token</a>
+                <a class="btn btn-outline-warning" href="cambiar_contrasena.html">🔒 Contraseña</a>
+                <a class="btn btn-outline-danger" href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+            `;
+        }
+        else {
+            menu.innerHTML = `
+                <a class="btn btn-outline-primary" href="carrito.html">
+                    Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
+                </a>
+                <a class="btn btn-outline-danger" href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+            `;
+        }
+    </script>
+    <script>
+    async function exportarExcel() {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch("/api/exportar_productos", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                alert(error.mensaje || "Error al exportar");
+                return;
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "productos_delizia.xlsx";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            alert("Error de conexión con el servidor.");
+        }
+    }
+    </script>
+    
+    <script>
+    function mostrarConfirmacionEliminar() {
+        const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+        modal.show();
+    }
+
+    async function eliminarBaseDeDatos() {
+        const contrasena = document.getElementById("contrasenaConfirmacion").value;
+        if (!contrasena) return alert("Por favor ingresa la contraseña.");
+
+        const res = await fetch("/api/eliminar_base_datos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ contrasena })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            alert("✅ Base de datos eliminada correctamente.");
+            window.location.reload();
+        } else {
+            alert("❌ " + data.mensaje);
+        }
+    }
+    </script>
+    <script>
+    document.querySelectorAll(".filtro-tipo").forEach(btn => {
+        btn.addEventListener("click", () => {
+            tipoFiltro = btn.dataset.tipo;
+            paginaActual = 1;
+            cargarProductos(paginaActual);
+        });
+    });
+    </script>
+    
+    <!-- Modal de confirmación para eliminar base de datos -->
+    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content border-danger">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="eliminarModalLabel">🛑 Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>Esta acción eliminará <strong>todos los productos</strong> de la base de datos.</p>
+            <p>Por favor, ingresa tu contraseña para confirmar:</p>
+            <input type="password" id="contrasenaConfirmacion" class="form-control" placeholder="Contraseña" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" onclick="eliminarBaseDeDatos()">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="modal fade" id="modalEditarProducto" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -94,5 +269,7 @@
         if (res.ok) window.location.reload();
     });
     </script>
+
+    <script src="js/session.js"></script>
 </body>
 </html>
