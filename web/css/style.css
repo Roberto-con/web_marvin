@@ -253,6 +253,10 @@ select {
 .btn-success:hover {
     background-color: #00328c;
 }
+/* Encabezado azul para el modal de edición */
+.custom-header {
+    background-color: #004AAD !important;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
