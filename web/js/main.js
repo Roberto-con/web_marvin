@@ -58,9 +58,10 @@ function mostrarProductos(productos) {
 
         if (rol === "admin") {
             contenidoBoton = `
-                <a href="editar_producto.html?id=${prod.id}" class="btn btn-warning">Editar producto</a>
+                <button class="btn btn-warning" onclick="abrirModalEdicion(${prod.id})">Editar producto</button>
             `;
-        } else if (prod.disponible) {
+        }
+        else if (prod.disponible) {
             contenidoBoton = `
                 <button class="btn btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
                     Agregar al carrito
