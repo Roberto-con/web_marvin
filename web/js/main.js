@@ -58,12 +58,12 @@ function mostrarProductos(productos) {
 
         if (rol === "admin") {
             contenidoBoton = `
-                <button class="btn btn-warning" onclick="abrirModalEdicion(${prod.id})">Editar producto</button>
+                <button class="btn btn-navbar btn-warning" onclick="abrirModalEdicion(${prod.id})">Editar producto</button>
             `;
         }
         else if (prod.disponible) {
             contenidoBoton = `
-                <button class="btn btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
+                <button class="btn btn-navbar btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
                     Agregar al carrito
                 </button>
             `;
@@ -96,7 +96,7 @@ function mostrarToast(mensaje) {
     toast.innerHTML = `
         <div class="d-flex">
             <div class="toast-body">${mensaje}</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            <button type="button" class="btn btn-navbar-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button>
         </div>
     `;
     document.body.appendChild(toast);
