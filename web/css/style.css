@@ -257,57 +257,51 @@ select {
 .custom-header {
     background-color: #004AAD !important;
 }
-/* === Botones navbar modernos === */
-.navbar .btn {
-    font-size: 0.75rem;
-    padding: 6px 10px;
+/* === Estilos modernos para botones del menú === */
+.btn-navbar {
+    font-size: 0.8rem;
+    padding: 6px 12px;
     border-radius: 8px;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
     box-shadow: none;
+    margin-bottom: 4px;
 }
 
-/* Azul primario */
-.navbar .btn-outline-primary {
+/* Colores refinados */
+.btn-navbar.btn-outline-primary {
     color: #004AAD;
     border-color: #004AAD;
 }
-
-.navbar .btn-outline-primary:hover {
+.btn-navbar.btn-outline-primary:hover {
     background-color: #004AAD;
     color: white;
 }
 
-/* Rojo para acciones críticas */
-.navbar .btn-outline-danger {
+.btn-navbar.btn-outline-danger {
     color: #c62828;
     border-color: #c62828;
 }
-
-.navbar .btn-outline-danger:hover {
+.btn-navbar.btn-outline-danger:hover {
     background-color: #c62828;
     color: white;
 }
 
-/* Verde para acciones afirmativas */
-.navbar .btn-outline-success {
+.btn-navbar.btn-outline-success {
     color: #2e7d32;
     border-color: #2e7d32;
 }
-
-.navbar .btn-outline-success:hover {
+.btn-navbar.btn-outline-success:hover {
     background-color: #2e7d32;
     color: white;
 }
 
-/* Amarillo con contraste para botones tipo advertencia */
-.navbar .btn-warning {
+.btn-navbar.btn-warning {
     background-color: #FFD600;
     color: #000;
     border: none;
 }
-
-.navbar .btn-warning:hover {
+.btn-navbar.btn-warning:hover {
     background-color: #FFB300;
 }
 @media (max-width: 576px) {
