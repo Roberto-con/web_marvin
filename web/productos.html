@@ -74,17 +74,17 @@
 
         if (rol === "admin") {
             menu.innerHTML = `
-                <button class="btn btn-outline-danger" onclick="mostrarConfirmacionEliminar()">⚠️ Eliminar Base de Datos</button>
-                <a class="btn btn-outline-primary" href="productos.html">Productos</a>
-                <a class="btn btn-outline-primary" href="carrito.html">
+                <button class="btn btn-outline-danger btn-navbar" onclick="mostrarConfirmacionEliminar()">⚠️ Eliminar Base de Datos</button>
+                <a class="btn btn-outline-primary btn-navbar" href="productos.html">Productos</a>
+                <a class="btn btn-outline-primary btn-navbar" href="carrito.html">
                     Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
                 </a>
-                <button class="btn btn-outline-success" onclick="exportarExcel()">📤 Exportar Excel</button>
-                <a class="btn btn-primary" href="agregar_producto.html">+ Agregar Producto</a>
-                <a class="btn btn-outline-primary" href="pedidos.html">📦 Pedidos</a>
-                <a class="btn btn-outline-primary" href="token.html">🔐 Token</a>
-                <a class="btn btn-outline-warning" href="cambiar_contrasena.html">🔒 Contraseña</a>
-                <a class="btn btn-outline-danger" href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+                <button class="btn btn-outline-success btn-navbar" onclick="exportarExcel()">📤 Exportar Excel</button>
+                <a class="btn btn-primary btn-navbar" href="agregar_producto.html">+ Agregar Producto</a>
+                <a class="btn btn-outline-primary btn-navbar" href="pedidos.html">📦 Pedidos</a>
+                <a class="btn btn-outline-primary btn-navbar" href="token.html">🔐 Token</a>
+                <a class="btn btn-outline-warning btn-navbar" href="cambiar_contrasena.html">🔒 Contraseña</a>
+                <a class="btn btn-outline-danger btn-navbar" href="#" onclick="cerrarSesion()">Cerrar sesión</a>
             `;
         }
         else {
