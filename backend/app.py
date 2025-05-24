@@ -247,7 +247,8 @@ def editar_producto():
     sabor = request.form.get("sabor")
 
     disponible = request.form.get("disponible", "true").lower() == "true"
-    oferta = request.form.get("oferta", "true").lower() == "true"
+    oferta_raw = request.form.get("oferta", False)
+    oferta = str(oferta_raw).lower() in ["true", "1", "on"]
 
     imagen = request.files.get("imagen")
     imagen_url = None
