@@ -199,7 +199,10 @@
               <div class="mb-3"><label for="sabor" class="form-label">Sabor</label><input type="text" class="form-control" id="sabor"></div>
               <div class="mb-3"><label for="imagen" class="form-label">Nueva imagen (opcional)</label><input type="file" class="form-control" id="imagen" accept="image/*"></div>
               <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="disponible"><label class="form-check-label" for="disponible">Producto disponible</label></div>
-              <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="oferta"><label class="form-check-label" for="oferta">Este producto está en oferta</label></div>
+              <div class="mb-3">
+                <label for="oferta" class="form-label">Promoción activa (opcional)</label>
+                <input type="text" class="form-control" id="oferta" placeholder="Ej. Llévate 12 + 1 gratis">
+              </div>
             </div>
             <div class="modal-footer">
               <button id="btn-eliminar" type="button" class="btn btn-danger">🗑️ Eliminar producto</button>
@@ -223,7 +226,7 @@
             document.getElementById("precio").value = producto.precio;
             document.getElementById("sabor").value = producto.sabor || "";
             document.getElementById("disponible").checked = producto.disponible;
-            document.getElementById("oferta").checked = producto.oferta;
+            document.getElementById("oferta").value = producto.promocion || "";
             new bootstrap.Modal(document.getElementById("modalEditarProducto")).show();
           });
     }
@@ -237,7 +240,7 @@
         formData.append("precio", document.getElementById("precio").value);
         formData.append("sabor", document.getElementById("sabor").value);
         formData.append("disponible", document.getElementById("disponible").checked);
-        formData.append("oferta", document.getElementById("oferta").checked);
+        formData.append("promocion", document.getElementById("oferta").value.trim());
         const imagen = document.getElementById("imagen").files[0];
         if (imagen) formData.append("imagen", imagen);
         const res = await fetch("/api/editar_producto", {

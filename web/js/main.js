@@ -46,14 +46,6 @@ function mostrarProductos(productos) {
         card.dataset.nombre = prod.nombre;
         card.dataset.codigo = prod.codigo;
 
-        // Si el producto está en oferta, agregar la etiqueta
-        if (prod.oferta == 1 || prod.oferta === true) {
-            const ofertaBadge = document.createElement("span");
-            ofertaBadge.className = "oferta-badge";
-            ofertaBadge.textContent = "Oferta";
-            card.appendChild(ofertaBadge);
-        }
-
         let contenidoBoton = "";
 
         if (rol === "admin") {
@@ -63,7 +55,7 @@ function mostrarProductos(productos) {
         }
         else if (prod.disponible) {
             contenidoBoton = `
-                <button class="btn btn-navbar btn-primary" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
+                <button class="btn btn-navbar btn-primary" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
                     Agregar al carrito
                 </button>
             `;
@@ -71,11 +63,10 @@ function mostrarProductos(productos) {
             contenidoBoton = `<span class="badge bg-danger">Agotado</span>`;
         }
 
+        // Componente HTML de la tarjeta
         card.innerHTML = `
             <div class="card h-100 position-relative">
-                ${prod.oferta == 1 || prod.oferta === true ? `
-                    <span class="oferta-badge">Oferta</span>
-                ` : ""}
+                ${prod.promocion ? `<span class="oferta-badge">${prod.promocion}</span>` : ""}
                 <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <h5 class="card-title">${prod.nombre} - ${prod.sabor}</h5>
@@ -85,10 +76,10 @@ function mostrarProductos(productos) {
                 </div>
             </div>
         `;
+
         contenedor.appendChild(card);
     });
 }
-
 function mostrarToast(mensaje) {
     const toast = document.createElement("div");
     toast.className = "toast align-items-center text-bg-success position-fixed bottom-0 end-0 m-4 show";

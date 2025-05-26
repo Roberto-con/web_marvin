@@ -157,7 +157,7 @@ def obtener_productos():
     # Lista de productos
     valores.extend([limite, offset])
     cursor.execute(f"""
-    SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, oferta
+    SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
     FROM productos
     {where_sql}
     ORDER BY nombre
@@ -245,10 +245,9 @@ def editar_producto():
     nombre = request.form.get("nombre")
     precio = request.form.get("precio")
     sabor = request.form.get("sabor")
+    promocion = request.form.get("promocion", "").strip()  # ⬅️ nuevo campo
 
     disponible = request.form.get("disponible", "true").lower() == "true"
-    oferta_raw = request.form.get("oferta", False)
-    oferta = str(oferta_raw).lower() in ["true", "1", "on"]
 
     imagen = request.files.get("imagen")
     imagen_url = None
@@ -269,13 +268,13 @@ def editar_producto():
             return jsonify({"mensaje": f"Error al subir imagen: {str(e)}"}), 500
 
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, imagen_url=%s, disponible=%s, oferta=%s WHERE id=%s",
-            (codigo, nombre, precio, sabor, imagen_url, disponible, oferta, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, imagen_url=%s, disponible=%s, promocion=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, imagen_url, disponible, promocion, id_producto)
         )
     else:
         cursor.execute(
-            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, disponible=%s, oferta=%s WHERE id=%s",
-            (codigo, nombre, precio, sabor, disponible, oferta, id_producto)
+            "UPDATE productos SET codigo=%s, nombre=%s, precio=%s, sabor=%s, disponible=%s, promocion=%s WHERE id=%s",
+            (codigo, nombre, precio, sabor, disponible, promocion, id_producto)
         )
 
     conn.commit()
@@ -653,7 +652,7 @@ def obtener_producto_por_id(producto_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
         FROM productos
         WHERE id = %s
     """, (producto_id,))
