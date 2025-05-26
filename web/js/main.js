@@ -202,7 +202,7 @@ ${carrito.map(p =>
 📞 Tel: ${telefono_cliente}
 ✅ Por favor, confirma este pedido.`;
 
-    const urlWhatsApp = "https://wa.me/59171016195?text=" + encodeURIComponent(mensaje);
+    const urlWhatsApp = "https://wa.me/59176765193?text=" + encodeURIComponent(mensaje);
 
     // 👉 abrir WhatsApp inmediatamente tras clic
     window.open(urlWhatsApp, "_blank");
