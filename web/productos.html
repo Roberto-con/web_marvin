@@ -269,7 +269,29 @@
         if (res.ok) window.location.reload();
     });
     </script>
-
+    <!-- Modal para seleccionar cantidad -->
+    <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalCantidadLabel">Agregar al carrito</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="promo-visual" class="text-success fw-semibold text-center">🎁 Llévate 12 + 1 gratis</p>
+            <div class="mb-3">
+              <label for="cantidad-input" class="form-label">Cantidad</label>
+              <input type="number" id="cantidad-input" class="form-control" min="1" value="1">
+            </div>
+            <p>Total: <strong id="total-dinamico">0.00 Bs</strong></p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button class="btn btn-primary" id="btn-confirmar-cantidad">Agregar al carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="js/session.js"></script>
 </body>
 </html>

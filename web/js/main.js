@@ -63,7 +63,7 @@ function mostrarProductos(productos) {
         }
         else if (prod.disponible) {
             contenidoBoton = `
-                <button class="btn btn-navbar btn-primary" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
+                <button class="btn btn-navbar btn-primary" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}')">
                     Agregar al carrito
                 </button>
             `;
@@ -111,14 +111,14 @@ function guardarCarrito(carrito) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-function agregarAlCarrito(id, nombre, precio, sabor = "-") {
+function agregarAlCarrito(id, nombre, precio, sabor = "-", cantidad = 1) {
     const carrito = obtenerCarrito();
-    const item = carrito.find(p => p.id === id && p.sabor === sabor); // importante: comparar también sabor
+    const item = carrito.find(p => p.id === id && p.sabor === sabor);
 
     if (item) {
-        item.cantidad += 1;
+        item.cantidad += cantidad;
     } else {
-        carrito.push({ id, nombre, precio, sabor, cantidad: 1 });
+        carrito.push({ id, nombre, precio, sabor, cantidad });
     }
 
     guardarCarrito(carrito);
@@ -181,7 +181,7 @@ function enviarPedido() {
 
     const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
     const nombre_cliente = document.getElementById("nombreCliente")?.value.trim();
-    const telefono_cliente = document.getElementById("telefonoCliente")?.value.trim();
+    const telefono_cliente = ""; // Eliminado de la UI
 
     if (!nombre_cliente || !telefono_cliente) {
         alert("⚠️ Por favor, completa tu nombre y teléfono antes de realizar el pedido.");
@@ -368,3 +368,36 @@ function generarReporteMensual() {
         console.error(err);
     });
 }
+let productoSeleccionado = {};
+
+function abrirModalCantidad(id, nombre, precio, sabor) {
+    productoSeleccionado = { id, nombre, precio, sabor };
+    document.getElementById("cantidad-input").value = 1;
+    document.getElementById("promo-visual").textContent = "🎁 Llévate 12 + 1 gratis";
+    actualizarTotalModal();
+
+    const modal = new bootstrap.Modal(document.getElementById("modalCantidad"));
+    modal.show();
+}
+
+function actualizarTotalModal() {
+    const cantidad = parseInt(document.getElementById("cantidad-input").value) || 1;
+    const total = cantidad * productoSeleccionado.precio;
+    document.getElementById("total-dinamico").textContent = `${total.toFixed(2)} Bs`;
+}
+
+document.getElementById("cantidad-input").addEventListener("input", actualizarTotalModal);
+
+document.getElementById("btn-confirmar-cantidad").addEventListener("click", () => {
+    const cantidad = parseInt(document.getElementById("cantidad-input").value);
+    if (cantidad >= 1) {
+        agregarAlCarrito(
+            productoSeleccionado.id,
+            productoSeleccionado.nombre,
+            productoSeleccionado.precio,
+            productoSeleccionado.sabor,
+            cantidad
+        );
+        bootstrap.Modal.getInstance(document.getElementById("modalCantidad")).hide();
+    }
+});
