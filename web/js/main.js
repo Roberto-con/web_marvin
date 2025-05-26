@@ -128,13 +128,14 @@ function agregarAlCarrito(id, nombre, precio, sabor = "-", cantidad = 1) {
 function actualizarContadorCarrito() {
     const carrito = obtenerCarrito();
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-    const contador = document.getElementById("contador-carrito");
-    if (contador) {
+
+    // Selecciona todos los elementos que muestran el contador
+    const contadores = document.querySelectorAll("#contador-carrito");
+    contadores.forEach(contador => {
         contador.textContent = totalItems;
         contador.style.display = totalItems > 0 ? "inline-block" : "none";
-    }
+    });
 }
-
 // Ejecutar al cargar
 actualizarContadorCarrito();
 
