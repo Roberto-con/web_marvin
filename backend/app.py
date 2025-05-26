@@ -494,7 +494,7 @@ def importar_productos(usuario_data):
         df = pd.read_excel(archivo, engine="openpyxl")
 
         # ✅ Incluye 'disponible' como columna esperada
-        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url", "disponible"}
+        columnas_esperadas = {"codigo", "nombre", "precio", "tipo", "sabor", "cantidad", "imagen_url", "disponible", "promocion"}
         if not columnas_esperadas.issubset(df.columns):
             return jsonify({"mensaje": "Formato incorrecto. Verifica los encabezados de las columnas."}), 400
 
@@ -529,7 +529,8 @@ def importar_productos(usuario_data):
                         tipo = %s,
                         cantidad = %s,
                         imagen_url = %s,
-                        disponible = %s
+                        disponible = %s,
+                        promocion = %s
                     WHERE nombre = %s AND sabor = %s
                 """, (
                     row["codigo"] if pd.notna(row.get("codigo")) else None,
@@ -538,14 +539,14 @@ def importar_productos(usuario_data):
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
                     imagen_final,
                     disponible,
+                    row["promocion"] if pd.notna(row.get("promocion")) else "",
                     nombre,
                     sabor
                 ))
             else:
                 cursor.execute("""
-                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                """, (
+                    INSERT INTO productos (codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)                """, (
                     row["codigo"] if pd.notna(row.get("codigo")) else None,
                     nombre,
                     row["precio"] if pd.notna(row.get("precio")) else 0.00,
@@ -553,7 +554,8 @@ def importar_productos(usuario_data):
                     sabor,
                     row["cantidad"] if pd.notna(row.get("cantidad")) else 0,
                     nueva_imagen,
-                    disponible
+                    disponible,
+                    row["promocion"] if pd.notna(row.get("promocion")) else ""
                 ))
 
         conn.commit()
@@ -573,7 +575,7 @@ def exportar_productos(usuario_data):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible FROM productos")
+        cursor.execute("SELECT codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion FROM productos")
         productos = cursor.fetchall()
         conn.close()
 
