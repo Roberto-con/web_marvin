@@ -304,6 +304,24 @@ select {
 .btn-navbar.btn-warning:hover {
     background-color: #FFB300;
 }
+#boton-carrito-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  text-decoration: none;
+}
+
+#boton-carrito-flotante .badge {
+  font-size: 0.65rem;
+  padding: 3px 6px;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
