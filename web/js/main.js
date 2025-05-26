@@ -142,14 +142,15 @@ actualizarContadorCarrito();
 if (document.getElementById("carrito-lista")) {
     const lista = document.getElementById("carrito-lista");
     const totalElem = document.getElementById("carrito-total");
-    const btnFinalizar = document.getElementById("btn-finalizar");
+    let btnFinalizar;
     let carrito = obtenerCarrito();
     let total = 0;
 
     if (carrito.length === 0) {
         lista.innerHTML = '<tr><td colspan="4" class="text-center text-muted">El carrito está vacío</td></tr>';
         totalElem.textContent = "0.00";
-        btnFinalizar.disabled = true;
+        btnFinalizar = document.getElementById("btn-finalizar");
+        if (btnFinalizar) btnFinalizar.disabled = true;
     } else {
         carrito.forEach((item, index) => {
             const subtotal = item.precio * item.cantidad;
@@ -164,10 +165,10 @@ if (document.getElementById("carrito-lista")) {
             total += subtotal;
         });
         totalElem.textContent = total.toFixed(2);
-        btnFinalizar.disabled = false;
+        btnFinalizar = document.getElementById("btn-finalizar");
+        if (btnFinalizar) btnFinalizar.disabled = false;
     }
 }
-
 function actualizarCantidad(index, nuevaCantidad) {
     const carrito = obtenerCarrito();
     carrito[index].cantidad = parseInt(nuevaCantidad) || 1;
