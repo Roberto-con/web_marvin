@@ -418,24 +418,29 @@ select {
         justify-content: space-between;
     }
 
-    #menu-dinamico {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.2rem;
-        row-gap: 0.4rem;
-        justify-content: space-between;
-        width: 100%;
-        max-height: calc(2 * 2.8rem); /* altura aproximada para 2 filas */
-        overflow: hidden;
-    }
-
-    #menu-dinamico .btn {
-        font-size: 0.34rem;
-        padding: 2px 3px;
-        min-width: 55px;
-    }
     .navbar-brand img {
         max-height: 36px;
         width: auto;
     }
+
+    #menu-dinamico {
+        display: flex;
+        justify-content: flex-end; /* Alineación a la derecha */
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        row-gap: 0.4rem;
+        width: 100%;
+        margin-top: -40px; /* Subir el botón a nivel del logo */
+        max-height: calc(2 * 2.8rem); /* Limita a 2 filas */
+        overflow: hidden;
+    }
+
+    #menu-dinamico .btn {
+        font-size: 0.75rem;
+        padding: 5px 12px;
+        min-width: 55px;
+        border-radius: 8px;
+    }
+    
 }
