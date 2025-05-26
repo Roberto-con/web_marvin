@@ -386,7 +386,14 @@ function actualizarTotalModal() {
     document.getElementById("total-dinamico").textContent = `${total.toFixed(2)} Bs`;
 }
 
-document.getElementById("cantidad-input").addEventListener("input", actualizarTotalModal);
+// Esperar a que se abra el modal para registrar el evento
+document.getElementById("modalCantidad").addEventListener("shown.bs.modal", () => {
+    const input = document.getElementById("cantidad-input");
+    if (input) {
+        input.addEventListener("input", actualizarTotalModal);
+        actualizarTotalModal(); // Mostrar el total al iniciar
+    }
+});
 
 document.getElementById("btn-confirmar-cantidad").addEventListener("click", () => {
     const cantidad = parseInt(document.getElementById("cantidad-input").value);
