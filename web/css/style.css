@@ -310,21 +310,24 @@ select {
   right: 20px;
   width: 56px;
   height: 56px;
-  background-color: #004AAD; /* Azul Delizia */
-  color: white;
+  background-color: white;        /* Fondo blanco */
+  color: #004AAD;                 /* Azul Delizia para el icono */
   font-size: 24px;
   border-radius: 50%;
+  border: 2px solid #004AAD;      /* Borde azul */
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   z-index: 9999;
   text-decoration: none;
+  transition: all 0.2s ease-in-out;
 }
 
 #boton-carrito-flotante:hover {
-  background-color: #00328c;
-  color: white;
+  background-color: #f0f4ff;
+  color: #00328c;
+  border-color: #00328c;
 }
 
 #boton-carrito-flotante .badge {
