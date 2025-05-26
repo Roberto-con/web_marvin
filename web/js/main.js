@@ -386,28 +386,7 @@ function actualizarTotalModal() {
     document.getElementById("total-dinamico").textContent = `${total.toFixed(2)} Bs`;
 }
 
-// Esperar a que se abra el modal para registrar el evento
-document.getElementById("modalCantidad").addEventListener("shown.bs.modal", () => {
-    const input = document.getElementById("cantidad-input");
-    if (input) {
-        input.addEventListener("input", actualizarTotalModal);
-        actualizarTotalModal(); // Mostrar el total al iniciar
-    }
-});
 
-document.getElementById("btn-confirmar-cantidad").addEventListener("click", () => {
-    const cantidad = parseInt(document.getElementById("cantidad-input").value);
-    if (cantidad >= 1) {
-        agregarAlCarrito(
-            productoSeleccionado.id,
-            productoSeleccionado.nombre,
-            productoSeleccionado.precio,
-            productoSeleccionado.sabor,
-            cantidad
-        );
-        bootstrap.Modal.getInstance(document.getElementById("modalCantidad")).hide();
-    }
-});
 document.addEventListener("DOMContentLoaded", () => {
     const inputCantidad = document.getElementById("cantidad-input");
     if (inputCantidad) {
