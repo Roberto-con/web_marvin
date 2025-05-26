@@ -184,11 +184,11 @@ function enviarPedido() {
     const nombre_cliente = document.getElementById("nombreCliente")?.value.trim();
     const telefono_cliente = ""; // Eliminado de la UI
 
-    if (!nombre_cliente || !telefono_cliente) {
-        alert("⚠️ Por favor, completa tu nombre y teléfono antes de realizar el pedido.");
+    if (!nombre_cliente) {
+        alert("⚠️ Por favor, ingresa tu nombre antes de realizar el pedido.");
         return;
     }
-
+    
     const mensaje = `📦 *Nuevo pedido desde la página web*
 
 🛒 Productos:
