@@ -401,3 +401,26 @@ document.getElementById("btn-confirmar-cantidad").addEventListener("click", () =
         bootstrap.Modal.getInstance(document.getElementById("modalCantidad")).hide();
     }
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const inputCantidad = document.getElementById("cantidad-input");
+    if (inputCantidad) {
+        inputCantidad.addEventListener("input", actualizarTotalModal);
+    }
+
+    const btnConfirmar = document.getElementById("btn-confirmar-cantidad");
+    if (btnConfirmar) {
+        btnConfirmar.addEventListener("click", () => {
+            const cantidad = parseInt(document.getElementById("cantidad-input").value);
+            if (cantidad >= 1) {
+                agregarAlCarrito(
+                    productoSeleccionado.id,
+                    productoSeleccionado.nombre,
+                    productoSeleccionado.precio,
+                    productoSeleccionado.sabor,
+                    cantidad
+                );
+                bootstrap.Modal.getInstance(document.getElementById("modalCantidad")).hide();
+            }
+        });
+    }
+});
