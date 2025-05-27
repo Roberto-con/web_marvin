@@ -109,6 +109,9 @@
                     <td>${pedido.nombre_cliente || "-"}</td>
                     <td>${pedido.telefono_cliente || "-"}</td>
                     <td>${new Date(pedido.fecha).toLocaleString()}</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary" onclick="verPedido(${index})">Ver pedido</button>
+                    </td>
                 `;
                 tbody.appendChild(fila);
             });
@@ -164,6 +167,7 @@
                         <th>Cliente</th>
                         <th>Teléfono</th>
                         <th>Fecha</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-pedidos">
@@ -198,5 +202,88 @@
             });
         }
     </script>
+    <script>
+      let pedidosCargados = [];
+
+      function verPedido(index) {
+        const pedido = pedidosCargados[index];
+        const productos = JSON.parse(pedido.productos_json);
+
+        let html = `
+          <p><strong>Cliente:</strong> ${pedido.nombre_cliente || "-"}</p>
+          <p><strong>Fecha:</strong> ${new Date(pedido.fecha).toLocaleString()}</p>
+          <table class="table table-bordered mt-3">
+            <thead>
+              <tr>
+                <th>Producto</th><th>Sabor</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${productos.map(p => `
+                <tr>
+                  <td>${p.nombre}</td>
+                  <td>${p.sabor || "-"}</td>
+                  <td>${p.cantidad}</td>
+                  <td>${p.precio.toFixed(2)} Bs</td>
+                  <td>${(p.precio * p.cantidad).toFixed(2)} Bs</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <p class="text-end"><strong>Total:</strong> ${pedido.total} Bs</p>
+        `;
+
+        document.getElementById("detalle-pedido-modal").innerHTML = html;
+        new bootstrap.Modal(document.getElementById("modalVerPedido")).show();
+      }
+
+      function descargarPedidoPDF() {
+        const contenido = document.getElementById("detalle-pedido-modal").innerHTML;
+        const win = window.open('', '', 'height=700,width=600');
+        win.document.write(`<html><head><title>Pedido</title></head><body>${contenido}</body></html>`);
+        win.document.close();
+        win.print();
+      }
+
+      // Sobrescribir carga de pedidos para guardar en array
+      fetch("/api/pedidos", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Error al obtener los pedidos");
+        return res.json();
+      })
+      .then(pedidos => {
+        pedidosCargados = pedidos; // Guardar
+        mostrarPedidos(pedidos);   // Reutilizar función existente
+      })
+      .catch(err => {
+        document.getElementById("tabla-pedidos").innerHTML = `
+          <tr><td colspan="7" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
+        `;
+        console.error(err);
+      });
+    </script>
+    <!-- Modal Ver Pedido -->
+    <div class="modal fade" id="modalVerPedido" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Detalles del pedido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="detalle-pedido-modal">
+            <!-- Se rellena con JS -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success" onclick="descargarPedidoPDF()">📄 Descargar PDF</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
