@@ -134,14 +134,15 @@ def obtener_productos():
     tipo = request.args.get("tipo")
     busqueda = request.args.get("busqueda")
 
-    # Validar token para saber si es admin o invitado
+    # ✅ Obtener rol desde token
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     rol = "invitado"
-    try:
-        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        rol = decoded.get("rol", "invitado")
-    except:
-        pass  # Token inválido o ausente → sigue como invitado
+    if token:
+        try:
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            rol = decoded.get("rol", "invitado")
+        except:
+            pass  # Token inválido
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -157,16 +158,17 @@ def obtener_productos():
         condiciones.append("LOWER(nombre) LIKE %s")
         valores.append(f"%{busqueda.lower()}%")
 
-    # Filtrar productos disponibles solo para invitados
+    # ✅ Solo si es invitado se filtra por disponible = 1
     if rol == "invitado":
         condiciones.append("disponible = 1")
 
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
 
-    # Total de productos para paginación
+    # ✅ Total para paginación
     cursor.execute(f"SELECT COUNT(*) AS total FROM productos {where_sql}", valores)
     total = cursor.fetchone()["total"]
 
+    # ✅ Obtener productos
     valores.extend([limite, offset])
     cursor.execute(f"""
         SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
