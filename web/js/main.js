@@ -150,8 +150,13 @@ if (document.getElementById("carrito-lista")) {
             fila.innerHTML = `
                 <td>${item.nombre}</td>
                 <td>${item.precio.toFixed(2)} Bs</td>
-                <td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidad(${index}, this.value)" class="form-control form-control-sm" style="max-width: 70px;"></td>
+                <td>
+                    <input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidad(${index}, this.value)" class="form-control form-control-sm" style="max-width: 70px;">
+                </td>
                 <td>${subtotal.toFixed(2)} Bs</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarItemCarrito(${index})">🗑️</button>
+                </td>
             `;
             lista.appendChild(fila);
             total += subtotal;
@@ -180,7 +185,17 @@ function enviarPedido() {
         alert("⚠️ Por favor, ingresa tu nombre antes de realizar el pedido.");
         return;
     }
-    
+
+    // 🧾 Mostrar resumen de confirmación
+    let resumen = `🛒 Estás a punto de realizar el siguiente pedido:\n\n`;
+    carrito.forEach(p => {
+        const subtotal = (p.precio * p.cantidad).toFixed(2);
+        resumen += `• ${p.nombre} — ${p.cantidad} und. — Subtotal: ${subtotal} Bs\n`;
+    });
+    resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}\n\n¿Confirmas el pedido?`;
+
+    if (!confirm(resumen)) return;
+
     const mensaje = `📦 *Nuevo pedido desde la página web*
 
 🛒 Productos:
@@ -195,10 +210,8 @@ ${carrito.map(p =>
 
     const urlWhatsApp = "https://wa.me/59176765193?text=" + encodeURIComponent(mensaje);
 
-    // 👉 abrir WhatsApp inmediatamente tras clic
     window.open(urlWhatsApp, "_blank");
 
-    // Luego registrar el pedido en el backend
     fetch("/api/pedido", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -403,3 +416,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+function eliminarItemCarrito(index) {
+    let carrito = obtenerCarrito();
+    carrito.splice(index, 1); // elimina 1 elemento en el índice dado
+    guardarCarrito(carrito);
+    location.reload(); // recarga para actualizar tabla y contador
+}
