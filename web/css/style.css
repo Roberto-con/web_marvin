@@ -378,6 +378,11 @@ h2 {
 .table td {
     vertical-align: middle;
 }
+body.productos-body {
+  background: linear-gradient(to bottom, #004AAD, #ffffff);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
@@ -533,7 +538,12 @@ h2 {
     .carrito-tabla button {
       width: 100%;
     }
-  }
+    /* Fondo degradado para productos.html */
+    body.productos-body {
+      background: linear-gradient(to bottom, #004AAD, #ffffff);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
     
 }
 /* ========================= */
