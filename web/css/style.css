@@ -352,6 +352,32 @@ select {
     box-shadow: 0 0 6px rgba(0,0,0,0.1);
     z-index: 2;
 }
+/* Estilos migrados desde pedidos.html */
+body {
+    background-color: #f7f9fc;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+    margin-top: 50px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+h2 {
+    color: #004AAD;
+}
+
+.table th {
+    background-color: #004AAD;
+    color: white;
+}
+
+.table td {
+    vertical-align: middle;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
@@ -509,4 +535,65 @@ select {
     }
   }
     
+}
+/* ========================= */
+/* 🖨️ Estilos para impresión */
+/* ========================= */
+@media print {
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 13px;
+    background-color: white;
+    color: black;
+  }
+
+  .modal {
+    position: static !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  .modal-dialog {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .modal-content {
+    border: none;
+    box-shadow: none;
+  }
+
+  .modal-header, .modal-footer {
+    display: none !important; /* Oculta botones y título */
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #004AAD;
+    color: white;
+  }
+
+  h4 {
+    color: #004AAD;
+    margin-bottom: 10px;
+  }
+
+  .text-end {
+    text-align: right;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }
