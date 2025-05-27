@@ -337,7 +337,7 @@ select {
   padding: 3px 6px;
 }
 .ribbon-promocion {
-    width: 110px;
+    width: 100px;
     background: #28a745;
     color: white;
     text-align: center;
@@ -345,11 +345,11 @@ select {
     font-weight: bold;
     padding: 4px 0;
     position: absolute;
-    top: 12px;
-    left: -32px;
+    top: 10px;
+    left: -20px; /* antes estaba en -32px */
     transform: rotate(-45deg);
     border-radius: 6px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
     z-index: 2;
 }
 @media (max-width: 576px) {
