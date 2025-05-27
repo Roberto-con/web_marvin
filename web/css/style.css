@@ -337,17 +337,18 @@ select {
   padding: 3px 6px;
 }
 .ribbon-promocion {
-    width: 120px;
+    width: 110px;
     background: #28a745;
     color: white;
     text-align: center;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
-    padding: 5px 0;
+    padding: 4px 0;
     position: absolute;
     top: 12px;
-    right: -32px;
-    transform: rotate(45deg);
+    left: -32px;
+    transform: rotate(-45deg);
+    border-radius: 6px;
     box-shadow: 0 0 8px rgba(0,0,0,0.1);
     z-index: 2;
 }
