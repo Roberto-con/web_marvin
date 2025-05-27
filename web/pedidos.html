@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="no-store" http-equiv="Cache-Control">
-<title>Pedidos Realizados - Delizia</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-<style>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <title>Pedidos Realizados - Delizia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
         body {
             background-color: #f7f9fc;
             font-family: 'Segoe UI', sans-serif;
@@ -29,47 +28,154 @@
             vertical-align: middle;
         }
     </style>
+    <script>
+        const rol = localStorage.getItem("rol");
+        if (rol !== "admin") {
+            alert("Acceso denegado");
+            window.location.href = "index.html";
+        }
 
-</meta></head>
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || performance.navigation.type === 2) {
+                if (!localStorage.getItem("token")) {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        async function limpiarPedidos() {
+            if (confirm("¿Estás seguro de que deseas eliminar todos los pedidos?")) {
+                const res = await fetch("/api/limpiar_pedidos", {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+                if (res.ok) {
+                    alert("Pedidos eliminados correctamente");
+                    location.reload();
+                } else {
+                    alert("Error al eliminar pedidos");
+                }
+            }
+        }
+
+        function filtrarPedidos() {
+            const fechaInicio = document.getElementById("fecha-inicio").value;
+            const fechaFin = document.getElementById("fecha-fin").value;
+
+            let url = "/api/pedidos";
+            const params = [];
+
+            if (fechaInicio) params.push(`fecha_inicio=${fechaInicio}`);
+            if (fechaFin) params.push(`fecha_fin=${fechaFin}`);
+
+            if (params.length > 0) {
+                url += "?" + params.join("&");
+            }
+
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            .then(res => res.json())
+            .then(mostrarPedidos)
+            .catch(err => {
+                document.getElementById("tabla-pedidos").innerHTML = `
+                    <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudieron filtrar los pedidos</td></tr>
+                `;
+                console.error(err);
+            });
+        }
+
+        function mostrarPedidos(pedidos) {
+            const tbody = document.getElementById("tabla-pedidos");
+            tbody.innerHTML = "";
+
+            pedidos.forEach((pedido, index) => {
+                const fila = document.createElement("tr");
+                const productosTexto = JSON.parse(pedido.productos_json)
+                  .map(p => {
+                    const sabor = p.sabor ? ` <em>(${p.sabor})</em>` : "";
+                    return `📌 <strong>${p.nombre}</strong>${sabor} — ${p.cantidad} und. — ${p.precio} Bs`;
+                  })
+                  .join("<br>");
+                fila.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="text-start">${productosTexto}</td>
+                    <td><strong>${pedido.total} Bs</strong></td>
+                    <td>${pedido.nombre_cliente || "-"}</td>
+                    <td>${pedido.telefono_cliente || "-"}</td>
+                    <td>${new Date(pedido.fecha).toLocaleString()}</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary" onclick="verPedido(${index})">Ver pedido</button>
+                    </td>
+                `;
+                tbody.appendChild(fila);
+            });
+        }
+
+        // Cargar pedidos al iniciar
+        fetch("/api/pedidos", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al obtener los pedidos");
+            return res.json();
+        })
+        .then(mostrarPedidos)
+        .catch(err => {
+            document.getElementById("tabla-pedidos").innerHTML = `
+                <tr><td colspan="6" class="text-danger text-center">⚠️ No se pudo cargar la lista de pedidos</td></tr>
+            `;
+            console.error(err);
+        });
+    </script>
+</head>
 <body>
-<div class="container">
-<h2 class="mb-4 text-center">📦 Pedidos Realizados</h2>
-<div class="text-end mb-3">
-<button class="btn btn-success me-2" onclick="generarReporteMensual()">📄 Generar reporte mensual</button>
-<button class="btn btn-danger" onclick="limpiarPedidos()">⚠️ Eliminar pedidos</button>
-</div>
-<div class="row mb-4">
-<div class="col-md-4">
-<label class="form-label" for="fecha-inicio">Desde:</label>
-<input class="form-control" id="fecha-inicio" type="date"/>
-</div>
-<div class="col-md-4">
-<label class="form-label" for="fecha-fin">Hasta:</label>
-<input class="form-control" id="fecha-fin" type="date"/>
-</div>
-<div class="col-md-4 d-flex align-items-end">
-<button class="btn btn-primary w-100" onclick="filtrarPedidos()">Filtrar</button>
-</div>
-</div>
-<div class="table-responsive">
-<table class="table table-bordered align-middle text-center">
-<thead>
-<tr>
-<th>#</th>
-<th>Productos</th>
-<th>Total</th>
-<th>Cliente</th>
-<th>Teléfono</th>
-<th>Fecha</th>
-<th>Acción</th>
-</tr>
-</thead>
-<tbody id="tabla-pedidos">
-</tbody>
-</table>
-</div>
-</div>
-<script>
+    <div class="container">
+        <h2 class="mb-4 text-center">📦 Pedidos Realizados</h2>
+        <div class="text-end mb-3">
+            <button class="btn btn-success me-2" onclick="generarReporteMensual()">📄 Generar reporte mensual</button>
+            <button class="btn btn-danger" onclick="limpiarPedidos()">⚠️ Eliminar pedidos</button>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label for="fecha-inicio" class="form-label">Desde:</label>
+                <input type="date" class="form-control" id="fecha-inicio">
+            </div>
+            <div class="col-md-4">
+                <label for="fecha-fin" class="form-label">Hasta:</label>
+                <input type="date" class="form-control" id="fecha-fin">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="filtrarPedidos()">Filtrar</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-pedidos">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
         function generarReporteMensual() {
             fetch("/api/pedidos/reporte", {
                 method: "GET",
@@ -96,7 +202,7 @@
             });
         }
     </script>
-<script>
+    <script>
       let pedidosCargados = [];
 
       function verPedido(index) {
@@ -161,24 +267,24 @@
         console.error(err);
       });
     </script>
-<!-- Modal Ver Pedido -->
-<div class="modal fade" id="modalVerPedido" tabindex="-1">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-<div class="modal-header bg-primary text-white">
-<h5 class="modal-title">Detalles del pedido</h5>
-<button class="btn-close" data-bs-dismiss="modal" type="button"></button>
-</div>
-<div class="modal-body" id="detalle-pedido-modal">
-<!-- Se rellena con JS -->
-</div>
-<div class="modal-footer">
-<button class="btn btn-success" onclick="descargarPedidoPDF()">📄 Descargar PDF</button>
-<button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-</div>
-</div>
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal Ver Pedido -->
+    <div class="modal fade" id="modalVerPedido" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Detalles del pedido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="detalle-pedido-modal">
+            <!-- Se rellena con JS -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success" onclick="descargarPedidoPDF()">📄 Descargar PDF</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
