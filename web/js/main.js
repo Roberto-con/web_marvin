@@ -22,11 +22,16 @@ function cargarProductos(pagina, terminoBusqueda = "") {
         url += `&busqueda=${encodeURIComponent(terminoBusqueda)}`;
     }
 
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            mostrarProductos(data.productos);
-            mostrarPaginacion(data.total, data.pagina, data.limite);
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        mostrarProductos(data.productos);
+        mostrarPaginacion(data.total, data.pagina, data.limite);
 
             const ancla = document.getElementById("scroll-top-productos");
             if (ancla) {
