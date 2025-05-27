@@ -215,13 +215,46 @@
         new bootstrap.Modal(document.getElementById("modalVerPedido")).show();
       }
 
-      function descargarPedidoPDF() {
-        const contenido = document.getElementById("detalle-pedido-modal").innerHTML;
-        const win = window.open('', '', 'height=700,width=600');
-        win.document.write(`<html><head><title>Pedido</title></head><body>${contenido}</body></html>`);
-        win.document.close();
-        win.print();
-      }
+        function descargarPedidoPDF() {
+          const contenido = document.getElementById("detalle-pedido-modal").innerHTML;
+
+          const estilos = `
+            <style>
+              body {
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 13px;
+                color: #000;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+              }
+              th, td {
+                border: 1px solid #ccc;
+                padding: 6px 10px;
+                text-align: center;
+              }
+              th {
+                background-color: #004AAD;
+                color: white;
+              }
+              h4 {
+                color: #004AAD;
+                margin-bottom: 10px;
+                text-align: center;
+              }
+              .text-end {
+                text-align: right;
+              }
+            </style>
+          `;
+
+          const win = window.open('', '', 'height=700,width=600');
+          win.document.write(`<html><head><title>Pedido</title>${estilos}</head><body>${contenido}</body></html>`);
+          win.document.close();
+          win.print();
+        }
 
       // Sobrescribir carga de pedidos para guardar en array
       fetch("/api/pedidos", {
