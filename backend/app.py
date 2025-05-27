@@ -134,6 +134,14 @@ def obtener_productos():
     tipo = request.args.get("tipo")
     busqueda = request.args.get("busqueda")
 
+    # 🛡️ Leer el rol desde el token
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        rol = decoded.get("rol", "invitado")
+    except:
+        rol = "invitado"
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -148,6 +156,10 @@ def obtener_productos():
         condiciones.append("LOWER(nombre) LIKE %s")
         valores.append(f"%{busqueda.lower()}%")
 
+    # 🔐 Si es invitado, filtrar productos no disponibles
+    if rol == "invitado":
+        condiciones.append("disponible = 1")
+
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
 
     # Total para paginación
@@ -157,12 +169,12 @@ def obtener_productos():
     # Lista de productos
     valores.extend([limite, offset])
     cursor.execute(f"""
-    SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
-    FROM productos
-    {where_sql}
-    ORDER BY nombre
-    LIMIT %s OFFSET %s
-""", valores)
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
+        FROM productos
+        {where_sql}
+        ORDER BY nombre
+        LIMIT %s OFFSET %s
+    """, valores)
 
     productos = cursor.fetchall()
     conn.close()
