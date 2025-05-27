@@ -97,8 +97,11 @@
             pedidos.forEach((pedido, index) => {
                 const fila = document.createElement("tr");
                 const productosTexto = JSON.parse(pedido.productos_json)
-                    .map(p => `📌 <strong>${p.nombre}</strong> — ${p.cantidad} und. — ${p.precio} Bs`)
-                    .join("<br>");
+                  .map(p => {
+                    const sabor = p.sabor ? ` <em>(${p.sabor})</em>` : "";
+                    return `📌 <strong>${p.nombre}</strong>${sabor} — ${p.cantidad} und. — ${p.precio} Bs`;
+                  })
+                  .join("<br>");
                 fila.innerHTML = `
                     <td>${index + 1}</td>
                     <td class="text-start">${productosTexto}</td>

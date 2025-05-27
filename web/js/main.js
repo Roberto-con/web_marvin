@@ -199,9 +199,9 @@ function enviarPedido() {
     const mensaje = `📦 *Nuevo pedido desde la página web*
 
 🛒 Productos:
-${carrito.map(p =>
-    `• ${p.nombre} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
-).join("\n")}
+    ${carrito.map(p =>
+        `• ${p.nombre}${p.sabor ? ` (${p.sabor})` : ""} — ${p.cantidad} unidades — ${p.precio} Bs c/u`
+    ).join("\n")}
 
 💵 Total: ${total.toFixed(2)} Bs
 👤 Cliente: ${nombre_cliente}
