@@ -134,14 +134,14 @@ def obtener_productos():
     tipo = request.args.get("tipo")
     busqueda = request.args.get("busqueda")
 
-    # Validar token y rol
+    # Validar token y obtener solo el rol
+    rol = "invitado"  # Valor por defecto
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    rol = "invitado"
     try:
         decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         rol = decoded.get("rol", "invitado")
     except:
-        pass  # sigue como invitado
+        pass  # Token inválido → sigue como invitado
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -157,7 +157,8 @@ def obtener_productos():
         condiciones.append("LOWER(nombre) LIKE %s")
         valores.append(f"%{busqueda.lower()}%")
 
-    if rol != "admin":
+    # 🚫 Solo si es invitado, se filtra disponible = 1
+    if rol == "invitado":
         condiciones.append("disponible = 1")
 
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
