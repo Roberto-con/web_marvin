@@ -141,7 +141,7 @@ def obtener_productos():
         decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         rol = decoded.get("rol", "invitado")
     except:
-        pass
+        pass  # Token inválido o ausente → sigue como invitado
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -157,13 +157,13 @@ def obtener_productos():
         condiciones.append("LOWER(nombre) LIKE %s")
         valores.append(f"%{busqueda.lower()}%")
 
-    # Solo los invitados deben filtrar los productos agotados
+    # Filtrar productos disponibles solo para invitados
     if rol == "invitado":
         condiciones.append("disponible = 1")
 
     where_sql = "WHERE " + " AND ".join(condiciones) if condiciones else ""
 
-    # Total
+    # Total de productos para paginación
     cursor.execute(f"SELECT COUNT(*) AS total FROM productos {where_sql}", valores)
     total = cursor.fetchone()["total"]
 
