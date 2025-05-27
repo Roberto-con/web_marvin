@@ -148,15 +148,15 @@ if (document.getElementById("carrito-lista")) {
             const subtotal = item.precio * item.cantidad;
             const fila = document.createElement("tr");
             fila.innerHTML = `
-                <td>${item.nombre}</td>
-                <td>${item.precio.toFixed(2)} Bs</td>
-                <td>
-                    <input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidad(${index}, this.value)" class="form-control form-control-sm" style="max-width: 70px;">
-                </td>
-                <td>${subtotal.toFixed(2)} Bs</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarItemCarrito(${index})">🗑️</button>
-                </td>
+              <td data-label="Producto">${item.nombre}</td>
+              <td data-label="Precio unitario">${item.precio.toFixed(2)} Bs</td>
+              <td data-label="Cantidad">
+                <input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidad(${index}, this.value)" class="form-control form-control-sm" style="max-width: 70px;">
+              </td>
+              <td data-label="Subtotal">${subtotal.toFixed(2)} Bs</td>
+              <td data-label="Eliminar">
+                <button class="btn btn-sm btn-outline-danger" onclick="eliminarItemCarrito(${index})">🗑️</button>
+              </td>
             `;
             lista.appendChild(fila);
             total += subtotal;

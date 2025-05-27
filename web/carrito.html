@@ -31,21 +31,21 @@
 <body>
     <div class="container">
         <h2 class="mb-4 text-center">🛒 Carrito de compras</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Producto</th>
-                        <th>Precio unitario</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="carrito-lista">
-                    <!-- Filas generadas por main.js -->
-                </tbody>
-            </table>
+        <div class="carrito-tabla">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th>Precio unitario</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th> <!-- eliminar -->
+              </tr>
+            </thead>
+            <tbody id="carrito-lista">
+              <!-- Filas generadas por main.js -->
+            </tbody>
+          </table>
         </div>
         <div class="mb-3 text-end">
             <strong class="fs-5">Total: <span id="carrito-total">0.00</span> Bs</strong>

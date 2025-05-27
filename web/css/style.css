@@ -465,5 +465,48 @@ select {
         left: -8px;
         padding: 3px 0;
     }
+    .carrito-tabla table,
+    .carrito-tabla thead,
+    .carrito-tabla tbody,
+    .carrito-tabla th,
+    .carrito-tabla td,
+    .carrito-tabla tr {
+      display: block;
+      width: 100%;
+    }
+
+    .carrito-tabla thead {
+      display: none;
+    }
+
+    .carrito-tabla tr {
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+      padding: 10px;
+    }
+
+    .carrito-tabla td {
+      text-align: left;
+      padding: 8px;
+      position: relative;
+      font-size: 0.95rem;
+      border: none;
+    }
+
+    .carrito-tabla td::before {
+      content: attr(data-label);
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+      color: #444;
+    }
+
+    .carrito-tabla input,
+    .carrito-tabla button {
+      width: 100%;
+    }
+  }
     
 }
