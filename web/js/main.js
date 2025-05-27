@@ -66,7 +66,7 @@ function mostrarProductos(productos) {
         // Componente HTML de la tarjeta
         card.innerHTML = `
             <div class="card h-100 position-relative">
-                ${prod.promocion ? `<span class="oferta-badge">${prod.promocion}</span>` : ""}
+                ${prod.promocion ? `<div class="ribbon-promocion">${prod.promocion}</div>` : ""}
                 <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <h5 class="card-title">${prod.nombre} - ${prod.sabor}</h5>
