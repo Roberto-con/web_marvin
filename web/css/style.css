@@ -458,5 +458,12 @@ select {
         min-width: 55px;
         border-radius: 8px;
     }
+    .ribbon-promocion {
+        width: 80px;
+        font-size: 0.55rem;
+        top: 22px;
+        left: -8px;
+        padding: 3px 0;
+    }
     
 }
