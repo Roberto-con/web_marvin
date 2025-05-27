@@ -376,11 +376,23 @@ function generarReporteMensual() {
 }
 let productoSeleccionado = {};
 
-function abrirModalCantidad(id, nombre, precio, sabor) {
+function abrirModalCantidad(id, nombre, precio, sabor, promocion = "") {
     productoSeleccionado = { id, nombre, precio, sabor };
+
     document.getElementById("cantidad-input").value = 1;
-    document.getElementById("promo-visual").textContent = "🎁 Llévate 12 + 1 gratis";
     actualizarTotalModal();
+
+    // Mostrar u ocultar la promoción
+    const promoElem = document.getElementById("promo-visual");
+    if (promoElem) {
+        if (promocion && promocion.trim() !== "") {
+            promoElem.textContent = `${promocion}`;
+            promoElem.style.display = "block";
+        } else {
+            promoElem.textContent = "";
+            promoElem.style.display = "none";
+        }
+    }
 
     const modal = new bootstrap.Modal(document.getElementById("modalCantidad"));
     modal.show();
