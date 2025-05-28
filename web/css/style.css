@@ -622,7 +622,7 @@ body.productos-body {
       }
 
       .carousel-inner .carousel-item > .row > .col {
-        flex: 0 0 100%;
+        flex: 0 0 50%;
         scroll-snap-align: start;
         max-width: 100%;
       }
