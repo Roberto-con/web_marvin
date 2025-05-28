@@ -612,7 +612,29 @@ body.productos-body {
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-    
+    /* carrusel version movil*/
+    .carousel-inner .carousel-item > .row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .carousel-inner .carousel-item > .row > .col {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        max-width: 100%;
+      }
+
+      .carousel-control-prev,
+      .carousel-control-next {
+        display: none; /* Oculta las flechas en móvil */
+      }
+
+      .carousel-indicators {
+        bottom: -25px;
+      }
 }
 /* ========================= */
 /* 🖨️ Estilos para impresión */
