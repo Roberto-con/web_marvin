@@ -613,7 +613,8 @@ body.productos-body {
       background-attachment: fixed;
     }
     /* carrusel version movil*/
-    .carousel-inner .carousel-item > .row {
+    @media (max-width: 576px) {
+      .carousel-inner .carousel-item > .row {
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -622,19 +623,24 @@ body.productos-body {
       }
 
       .carousel-inner .carousel-item > .row > .col {
-        flex: 0 0 50%;
+        flex: 0 0 50% !important; /* 👈 Fuerza el 50% horizontal */
+        max-width: 50% !important;
         scroll-snap-align: start;
-        max-width: 100%;
+      }
+
+      .product-card {
+        margin: 0 5px; /* Espaciado lateral entre tarjetas */
       }
 
       .carousel-control-prev,
       .carousel-control-next {
-        display: none; /* Oculta las flechas en móvil */
+        display: none; /* Ocultar flechas en móvil */
       }
 
       .carousel-indicators {
         bottom: -25px;
       }
+    }
 }
 /* ========================= */
 /* 🖨️ Estilos para impresión */
