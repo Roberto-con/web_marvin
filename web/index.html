@@ -102,7 +102,7 @@ fetch("/api/productos")
             <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
             <div class="card-body text-center">
               <h5 class="card-title">${prod.nombre}</h5>
-              <p class="card-text">${prod.promocion}</p>
+              <p class="badge bg-success text-wrap mb-2">${prod.promocion}</p>
               <p class="card-text"><strong>${prod.precio} Bs</strong></p>
             </div>
           </div>
