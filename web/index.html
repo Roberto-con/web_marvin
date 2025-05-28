@@ -59,20 +59,20 @@
 <main class="container mt-5">
   <h1 class="text-center text-primary">Bienvenido a Distribuidora Delizia</h1>
   <p class="text-center">Calidad y sabor en cada entrega.</p>
-  
+
   <div class="text-center mt-4">
     <a href="productos.html" class="btn btn-primary btn-lg px-4">
       Ver todos los productos
     </a>
   </div>
 </main>
+
 <div class="container mt-5">
   <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
   <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner" id="ofertas-carousel-inner">
       <!-- Tarjetas se insertan dinámicamente -->
     </div>
-    <!-- Controles -->
     <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>
     </button>
@@ -81,6 +81,7 @@
     </button>
   </div>
 </div>
+
 <script>
 fetch("/api/productos")
   .then(res => res.json())
@@ -101,7 +102,7 @@ fetch("/api/productos")
         col.className = "col-md-4 mb-3";
 
         col.innerHTML = `
-          <div class="card h-100">
+          <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
             <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
             <div class="card-body text-center">
               <h5 class="card-title">${prod.nombre}</h5>

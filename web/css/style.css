@@ -442,6 +442,15 @@ body.productos-body {
     color: #004AAD;
     font-weight: bold;
 }
+.oferta-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.oferta-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
