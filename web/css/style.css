@@ -383,18 +383,16 @@ body.productos-body {
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-.productos-body .filtro-tipo,
-.productos-body #form-busqueda .btn-outline-primary {
+.productos-body .filtro-tipo {
   color: white !important;
   border-color: white !important;
+  background-color: transparent;
 }
 
-.productos-body .filtro-tipo:hover,
-.productos-body #form-busqueda .btn-outline-primary:hover {
+.productos-body .filtro-tipo:hover {
   background-color: white !important;
   color: #004AAD !important;
-}
-@media (max-width: 576px) {
+}@media (max-width: 576px) {
     .card {
         height: auto;
         min-height: unset;
