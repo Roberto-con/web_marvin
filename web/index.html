@@ -67,7 +67,7 @@
   <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
   <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner" id="ofertas-carousel-inner">
-      <!-- Tarjetas se insertan dinámicamente -->
+      <!-- Las tarjetas se insertan dinámicamente dentro de filas y columnas -->
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>
@@ -95,7 +95,7 @@ fetch("/api/productos")
 
       grupo.forEach(prod => {
         const col = document.createElement("div");
-        col.className = "col-md-4 mb-3";
+        col.className = "col-6 col-md-4 mb-3";
 
         col.innerHTML = `
           <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
