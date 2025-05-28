@@ -399,7 +399,6 @@ function abrirModalCantidad(id, nombre, precio, sabor, promocion = "") {
     document.getElementById("cantidad-input").value = 1;
     actualizarTotalModal();
 
-    // Mostrar u ocultar la promoción
     const promoElem = document.getElementById("promo-visual");
     if (promoElem) {
         if (promocion && promocion.trim() !== "") {
@@ -410,6 +409,8 @@ function abrirModalCantidad(id, nombre, precio, sabor, promocion = "") {
             promoElem.style.display = "none";
         }
     }
+
+    document.getElementById("nombre-producto-modal").textContent = `${nombre} - ${sabor}`;
 
     const modal = new bootstrap.Modal(document.getElementById("modalCantidad"));
     modal.show();
