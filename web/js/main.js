@@ -191,13 +191,25 @@ function enviarPedido() {
         return;
     }
 
-    // 🧾 Mostrar resumen de confirmación
+    // 🧾 Mostrar resumen con validación de cantidades altas
     let resumen = `🛒 Estás a punto de realizar el siguiente pedido:\n\n`;
+    let hayAdvertencia = false;
+
     carrito.forEach(p => {
         const subtotal = (p.precio * p.cantidad).toFixed(2);
-        resumen += `• ${p.nombre} — ${p.cantidad} und. — Subtotal: ${subtotal} Bs\n`;
+        const advertencia = p.cantidad > 300 ? " ⚠️" : "";
+        if (p.cantidad > 300) hayAdvertencia = true;
+
+        resumen += `• ${p.nombre} — ${p.cantidad} und. — Subtotal: ${subtotal} Bs${advertencia}\n`;
     });
-    resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}\n\n¿Confirmas el pedido?`;
+
+    resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}`;
+
+    if (hayAdvertencia) {
+        resumen += `\n\n⚠️ Atención: Hay productos con más de 300 unidades. Por favor verifica que todo esté correcto.`;
+    }
+
+    resumen += `\n\n¿Confirmas el pedido?`;
 
     if (!confirm(resumen)) return;
 
