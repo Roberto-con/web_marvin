@@ -37,6 +37,18 @@ h1, h2, h3 {
 .nav-link:hover {
     color: #004AAD !important;
 }
+.navbar .btn-navbar {
+  border: none;
+  background-color: transparent;
+  color: #004AAD;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navbar .btn-navbar:hover {
+  background-color: #004AAD;
+  color: white;
+}
 
 /* Botones personalizados */
 .btn-primary {
