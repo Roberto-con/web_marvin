@@ -383,14 +383,16 @@ body.productos-body {
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-.productos-body .btn-outline-primary {
+.productos-body .filtro-tipo,
+.productos-body #form-busqueda .btn-outline-primary {
   color: white !important;
   border-color: white !important;
 }
 
-.productos-body .btn-outline-primary:hover {
+.productos-body .filtro-tipo:hover,
+.productos-body #form-busqueda .btn-outline-primary:hover {
   background-color: white !important;
-  color: #004AAD !important; /* azul delizia al pasar el mouse */
+  color: #004AAD !important;
 }
 @media (max-width: 576px) {
     .card {
