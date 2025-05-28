@@ -392,7 +392,32 @@ body.productos-body {
 .productos-body .filtro-tipo:hover {
   background-color: white !important;
   color: #004AAD !important;
-}@media (max-width: 576px) {
+}
+/* 🌟 Estilo elegante para navbar */
+.navbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-brand img {
+  filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.05));
+}
+
+#menu-dinamico .btn {
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s ease-in-out;
+  padding: 6px 12px;
+}
+
+#menu-dinamico .btn:hover {
+  box-shadow: 0 2px 8px rgba(0, 74, 173, 0.2);
+  transform: translateY(-1px);
+}
+@media (max-width: 576px) {
     .card {
         height: auto;
         min-height: unset;
