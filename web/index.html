@@ -25,18 +25,15 @@
     </script>
 </head>
 <body class="index-body">
-    <div class="index-logo">
-        <img src="https://res.cloudinary.com/deu5lzznt/image/upload/v1747175841/logo_tp5pzs.png" alt="Delizia">
-    </div>
-    
-    <div class="index-card text-center">
-        <h2 class="mb-3">🎉 Bienvenido a Delizia</h2>
-        <p class="text-muted">Helados, Yogurt, Mantequilla, Jugos y más...</p>
-        <div class="d-flex justify-content-center gap-3 mt-4">
-            <a href="productos.html" class="btn btn-primary">Ver Productos</a>
-            <button onclick="cerrarSesion()" class="btn btn-outline-danger">Cerrar sesión</button>
+    <nav class="navbar bg-white border-bottom sticky-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-3">
+            <a class="navbar-brand" href="index.html">
+                <img src="https://res.cloudinary.com/deu5lzznt/image/upload/v1747175841/logo_tp5pzs.png" alt="Delizia" height="45">
+            </a>
+            <div class="d-flex gap-2" id="menu-dinamico"></div>
         </div>
-    </div>
+    </nav>
+    
     <div id="index-ofertas" class="container mt-5">
       <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
       <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
