@@ -429,6 +429,19 @@ body.productos-body {
   box-shadow: 0 2px 8px rgba(0, 74, 173, 0.2);
   transform: translateY(-1px);
 }
+#index-ofertas .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+#index-ofertas .card:hover {
+    transform: scale(1.03);
+}
+#index-ofertas .card-title {
+    color: #004AAD;
+    font-weight: bold;
+}
 @media (max-width: 576px) {
     .card {
         height: auto;

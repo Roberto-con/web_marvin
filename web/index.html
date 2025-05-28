@@ -27,6 +27,24 @@
 <body class="index-body">
     <div class="index-logo">
         <img src="https://res.cloudinary.com/deu5lzznt/image/upload/v1747175841/logo_tp5pzs.png" alt="Delizia">
+            
+            <div id="index-ofertas" class="container mt-5">
+              <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
+              <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" id="ofertas-carousel-inner">
+                  <!-- Tarjetas se insertan dinámicamente -->
+                </div>
+                <!-- Controles -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </button>
+              </div>
+              
+            </div>
+            
     </div>
     <div class="index-card text-center">
         <h2 class="mb-3">🎉 Bienvenido a Delizia</h2>
@@ -43,6 +61,43 @@
             localStorage.removeItem("rol");
             window.location.href = "login.html";
         }
+    </script>
+    <script>
+    fetch("/api/productos")
+      .then(res => res.json())
+      .then(data => {
+        const productosConPromo = data.productos.filter(p => p.promocion && p.disponible);
+        const carouselInner = document.getElementById("ofertas-carousel-inner");
+
+        for (let i = 0; i < productosConPromo.length; i += 3) {
+          const grupo = productosConPromo.slice(i, i + 3);
+          const item = document.createElement("div");
+          item.className = "carousel-item" + (i === 0 ? " active" : "");
+
+          const row = document.createElement("div");
+          row.className = "row justify-content-center";
+
+          grupo.forEach(prod => {
+            const col = document.createElement("div");
+            col.className = "col-md-4 mb-3";
+
+            col.innerHTML = `
+              <div class="card h-100">
+                <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
+                <div class="card-body text-center">
+                  <h5 class="card-title">${prod.nombre}</h5>
+                  <p class="card-text">${prod.promocion}</p>
+                  <p class="card-text"><strong>${prod.precio} Bs</strong></p>
+                </div>
+              </div>
+            `;
+            row.appendChild(col);
+          });
+
+          item.appendChild(row);
+          carouselInner.appendChild(item);
+        }
+      });
     </script>
     <script src="js/session.js"></script>
 </body>
