@@ -65,6 +65,7 @@
 
 <div class="container mt-5">
   <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
+  <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
   <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner" id="ofertas-carousel-inner">
       <!-- Las tarjetas se insertan dinámicamente dentro de filas y columnas -->
@@ -89,7 +90,7 @@ fetch("/api/productos")
       const grupo = productosConPromo.slice(i, i + 3);
       const item = document.createElement("div");
       item.className = "carousel-item" + (i === 0 ? " active" : "");
-
+      
       const row = document.createElement("div");
       row.className = "row justify-content-center";
 
@@ -114,6 +115,11 @@ fetch("/api/productos")
       item.appendChild(row);
       carouselInner.appendChild(item);
     }
+    // Inicializar el carrusel una vez insertado todo
+    new bootstrap.Carousel('#ofertasCarousel', {
+      interval: 5000,
+      ride: 'carousel'
+    });
   });
 </script>
 <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
