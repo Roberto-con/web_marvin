@@ -19,7 +19,7 @@
     <div class="alert alert-primary">
         <strong id="token-valor">Cargando...</strong>
     </div>
-    <p class="text-muted">Este token se actualiza automáticamente cada 45 minutos. Puedes compartirlo con tus clientes.</p>
+    <p class="text-muted">Este token se actualiza automáticamente cada 120 minutos. Puedes compartirlo con tus clientes.</p>
     <p><strong>Tiempo restante:</strong> <span id="reloj">00:00</span></p>
     <a href="productos.html" class="btn btn-outline-primary">Volver a productos</a>
 </div>
@@ -50,7 +50,7 @@
         .then(res => res.json())
         .then(data => {
             document.getElementById("token-valor").textContent = data.token;
-            tiempoRestante = data.restante || 2700;
+            tiempoRestante = data.restante || 7200;
             iniciarTemporizador();
         })
         .catch(() => {
