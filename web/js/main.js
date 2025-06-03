@@ -201,7 +201,7 @@ function enviarPedido() {
         const advertencia = p.cantidad > 300 ? " ⚠️" : "";
         if (p.cantidad > 300) hayAdvertencia = true;
 
-        resumen += `• ${p.nombre} (${p.sabor || "-"}) — Cantidad: ${p.cantidad} — Subtotal: ${subtotal} Bs${advertencia}\n`;
+        resumen += `• ${p.nombre} (${p.sabor || "-"}) — Cant: x${p.cantidad} — Subtotal: ${subtotal} Bs${advertencia}\n`;
     });
 
     resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}`;
@@ -218,7 +218,7 @@ function enviarPedido() {
 
 🛒 Productos:
     ${carrito.map(p =>
-        `• ${p.nombre}${p.sabor ? ` (${p.sabor})` : ""} — Cantidad: ${p.cantidad} — ${p.precio} Bs c/u`
+        `• ${p.nombre}${p.sabor ? ` (${p.sabor})` : ""} — Cant: x${p.cantidad} — ${p.precio} Bs c/u`
     ).join("\n")}
 
 💵 Total: ${total.toFixed(2)} Bs
