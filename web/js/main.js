@@ -154,6 +154,7 @@ if (document.getElementById("carrito-lista")) {
             const fila = document.createElement("tr");
             fila.innerHTML = `
               <td data-label="Producto">${item.nombre}</td>
+              <td data-label="Sabor">${item.sabor || "-"}</td>
               <td data-label="Precio unitario">${item.precio.toFixed(2)} Bs</td>
               <td data-label="Cantidad">
                 <input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidad(${index}, this.value)" class="form-control form-control-sm" style="max-width: 70px;">
