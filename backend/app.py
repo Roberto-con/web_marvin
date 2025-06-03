@@ -421,7 +421,7 @@ def obtener_token_actual():
 
         creado_en = datetime.fromisoformat(creado_en_str)
         ahora = datetime.utcnow()
-        expiracion = creado_en + timedelta(minutes=45)
+        expiracion = creado_en + timedelta(minutes=120)
 
         if ahora >= expiracion:
             print("[INFO] Token expirado, regenerando...")
@@ -430,7 +430,7 @@ def obtener_token_actual():
                 info = json.load(f)
             token = info.get("token")
             creado_en = datetime.fromisoformat(info.get("creado_en"))
-            expiracion = creado_en + datetime.timedelta(minutes=45)
+            expiracion = creado_en + datetime.timedelta(minutes=120)
 
         restante = int((expiracion - ahora).total_seconds())
         restante = max(0, restante)
