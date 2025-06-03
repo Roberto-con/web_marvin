@@ -207,7 +207,7 @@ function enviarPedido() {
     resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}`;
 
     if (hayAdvertencia) {
-        resumen += `\n\n⚠️ Atención: Hay productos con más de 300 unidades. Por favor verifica que todo esté correcto.`;
+        resumen += `\n\n⚠️ Atención: Hay productos con una cantidad mayor a 300. Por favor verifica que todo esté correcto.`;
     }
 
     resumen += `\n\n¿Confirmas el pedido?`;
