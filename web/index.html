@@ -65,7 +65,6 @@
 
 <div class="container mt-5">
   <h3 class="text-center mb-4 text-primary">🎁 Ofertas disponibles</h3>
-  <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
   <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner" id="ofertas-carousel-inner">
       <!-- Las tarjetas se insertan dinámicamente dentro de filas y columnas -->
@@ -79,53 +78,45 @@
   </div>
 </div>
 
-  <script>
-  fetch("/api/ofertas")
-    .then(res => res.json())
-    .then(data => {
-      const productosConPromo = data.ofertas; // ya no necesitas filtrar aquí
-      const carouselInner = document.getElementById("ofertas-carousel-inner");
+<script>
+fetch("/api/productos/promociones")
+  .then(res => res.json())
+  .then(data => {
+    const productosConPromo = data.productos.filter(p => p.promocion && p.disponible);
+    const carouselInner = document.getElementById("ofertas-carousel-inner");
 
-      for (let i = 0; i < productosConPromo.length; i += 3) {
-        const grupo = productosConPromo.slice(i, i + 3);
-        const item = document.createElement("div");
-        item.className = "carousel-item" + (i === 0 ? " active" : "");
+    for (let i = 0; i < productosConPromo.length; i += 3) {
+      const grupo = productosConPromo.slice(i, i + 3);
+      const item = document.createElement("div");
+      item.className = "carousel-item" + (i === 0 ? " active" : "");
 
-        const row = document.createElement("div");
-        row.className = "row justify-content-center";
+      const row = document.createElement("div");
+      row.className = "row justify-content-center";
 
-        grupo.forEach(prod => {
-          const col = document.createElement("div");
-          col.className = "col-6 col-md-4 mb-3";
+      grupo.forEach(prod => {
+        const col = document.createElement("div");
+        col.className = "col-6 col-md-4 mb-3";
 
-          col.innerHTML = `
-            <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
-              <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
-              <div class="card-body text-center">
-                <h5 class="card-title">${prod.nombre}</h5>
-                <p class="badge bg-success text-wrap mb-2">${prod.promocion}</p>
-                <p class="card-text"><strong>${prod.cantidad}</strong></p>
-                <p class="card-text"><strong>${prod.precio} Bs</strong></p>
-              </div>
+        col.innerHTML = `
+          <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
+            <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
+            <div class="card-body text-center">
+              <h5 class="card-title">${prod.nombre}</h5>
+              <p class="badge bg-success text-wrap mb-2">${prod.promocion}</p>
+              <p class="card-text"><strong>${prod.cantidad}</strong></p>
+              <p class="card-text"><strong>${prod.precio} Bs</strong></p>
             </div>
-          `;
-          row.appendChild(col);
-        });
-
-        item.appendChild(row);
-        carouselInner.appendChild(item);
-      }
-
-      // Inicializar el carrusel
-      new bootstrap.Carousel('#ofertasCarousel', {
-        interval: 4000,
-        ride: 'carousel'
+          </div>
+        `;
+        row.appendChild(col);
       });
-    })
-    .catch(error => console.error("Error al cargar las ofertas:", error));
-  </script>
-  
-  <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
+
+      item.appendChild(row);
+      carouselInner.appendChild(item);
+    }
+  });
+</script>
+<div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">

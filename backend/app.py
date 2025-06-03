@@ -189,21 +189,21 @@ def obtener_productos():
         "total": total
     })
     
-@app.route("/api/ofertas")
-def api_ofertas():
-    try:
-        conn = obtener_conexion()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("""
-            SELECT * FROM productos
-            WHERE promocion IS NOT NULL AND promocion != '' AND disponible = TRUE
-        """)
-        ofertas = cursor.fetchall()
-        conn.close()
-        return jsonify({"ofertas": ofertas})
-    except Exception as e:
-        print("ERROR en /api/ofertas:", e)
-        return jsonify({"error": str(e)}), 500
+@app.route('/api/productos/promociones', methods=['GET'])
+def obtener_promociones():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute("""
+        SELECT id, codigo, nombre, precio, tipo, sabor, cantidad, imagen_url, disponible, promocion
+        FROM productos
+        WHERE promocion IS NOT NULL AND promocion != '' AND disponible = 1
+        ORDER BY nombre
+    """)
+    
+    productos = cursor.fetchall()
+    conn.close()
+    return jsonify({"productos": productos})
     
 @app.route('/api/pedido', methods=['POST'])
 def guardar_pedido():
@@ -388,7 +388,7 @@ def guardar_token():
 
 def iniciar_token_automatico():
     guardar_token()
-    threading.Timer(7200, iniciar_token_automatico).start()
+    threading.Timer(2700, iniciar_token_automatico).start()
 
 
 @app.route('/api/token')
@@ -421,7 +421,7 @@ def obtener_token_actual():
 
         creado_en = datetime.fromisoformat(creado_en_str)
         ahora = datetime.utcnow()
-        expiracion = creado_en + timedelta(minutes=120)
+        expiracion = creado_en + timedelta(minutes=45)
 
         if ahora >= expiracion:
             print("[INFO] Token expirado, regenerando...")
@@ -430,7 +430,7 @@ def obtener_token_actual():
                 info = json.load(f)
             token = info.get("token")
             creado_en = datetime.fromisoformat(info.get("creado_en"))
-            expiracion = creado_en + datetime.timedelta(minutes=120)
+            expiracion = creado_en + datetime.timedelta(minutes=45)
 
         restante = int((expiracion - ahora).total_seconds())
         restante = max(0, restante)
