@@ -372,7 +372,7 @@ def guardar_token():
 
 def iniciar_token_automatico():
     guardar_token()
-    threading.Timer(2700, iniciar_token_automatico).start()
+    threading.Timer(7200, iniciar_token_automatico).start()
 
 
 @app.route('/api/token')
