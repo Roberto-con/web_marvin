@@ -201,7 +201,7 @@ function enviarPedido() {
         const advertencia = p.cantidad > 300 ? " ⚠️" : "";
         if (p.cantidad > 300) hayAdvertencia = true;
 
-        resumen += `• ${p.nombre} — ${p.cantidad} und. — Subtotal: ${subtotal} Bs${advertencia}\n`;
+        resumen += `• ${p.nombre} (${p.sabor || "-"}) — cantidad ${p.cantidad} — Subtotal: ${subtotal} Bs${advertencia}\n`;
     });
 
     resumen += `\n💵 Total: ${total.toFixed(2)} Bs\n👤 Cliente: ${nombre_cliente}`;
