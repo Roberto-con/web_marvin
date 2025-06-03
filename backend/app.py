@@ -189,6 +189,17 @@ def obtener_productos():
         "total": total
     })
     
+@app.route("/api/ofertas")
+def api_ofertas():
+    import json
+    with open("productos.json", "r", encoding="utf-8") as f:
+        productos = json.load(f)
+
+    # Filtramos solo los productos en promoción y disponibles
+    ofertas = [p for p in productos if p.get("promocion") and p.get("disponible")]
+    
+    return jsonify({"ofertas": ofertas})
+    
 @app.route('/api/pedido', methods=['POST'])
 def guardar_pedido():
     data = request.get_json()
