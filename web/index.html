@@ -83,7 +83,7 @@
   fetch("/api/ofertas")
     .then(res => res.json())
     .then(data => {
-      const productosConPromo = data.ofertas;
+      const productosConPromo = data.ofertas; // ya no necesitas filtrar aquí
       const carouselInner = document.getElementById("ofertas-carousel-inner");
 
       for (let i = 0; i < productosConPromo.length; i += 3) {
@@ -116,13 +116,16 @@
         carouselInner.appendChild(item);
       }
 
-      // Activar el carrusel después de cargar todo
+      // Inicializar el carrusel
       new bootstrap.Carousel('#ofertasCarousel', {
         interval: 4000,
         ride: 'carousel'
       });
-    });
-  </script><div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
+    })
+    .catch(error => console.error("Error al cargar las ofertas:", error));
+  </script>
+  
+  <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
