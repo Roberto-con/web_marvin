@@ -467,11 +467,11 @@ body.productos-body {
   transform: rotate(180deg); /* reutiliza la misma flecha para el siguiente */
 }
 .carousel-control-prev {
-  left: -5rem; /* mueve más a la izquierda */
+  left: -8rem; /* mueve más a la izquierda */
 }
 
 .carousel-control-next {
-  right: -5rem; /* mueve más a la derecha */
+  right: -8rem; /* mueve más a la derecha */
 }
 @media (max-width: 576px) {
     .card {
