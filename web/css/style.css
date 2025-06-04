@@ -647,19 +647,31 @@ body.productos-body {
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-    /* carrusel versión móvil */
+    /* Carrusel móvil: 2 productos visibles por pantalla */
     .carousel-inner .carousel-item > .row {
       display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      gap: 0.5rem; /* Espacio entre tarjetas */
+      padding: 0 0.5rem;
+    }
+
+    .carousel-inner .carousel-item > .row::-webkit-scrollbar {
+      display: none; /* Oculta scrollbar en Chrome */
+    }
+    .carousel-inner .carousel-item > .row {
+      scrollbar-width: none; /* Oculta scrollbar en Firefox */
     }
 
     .carousel-inner .carousel-item > .row > .col {
-      flex: 0 0 50% !important;
+      flex: 0 0 50% !important;  /* Fuerza 50% del ancho */
       max-width: 50% !important;
-      scroll-snap-align: start;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      box-sizing: border-box;
     }
 
     .product-card {
@@ -668,7 +680,7 @@ body.productos-body {
 
     .carousel-control-prev,
     .carousel-control-next {
-      display: none;
+      display: none; /* Oculta flechas en móviles */
     }
 
     .carousel-indicators {
