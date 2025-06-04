@@ -648,35 +648,24 @@ body.productos-body {
         background-attachment: fixed;
     }
     /* Carrusel versión móvil: forzar 2 productos */
-    @media (max-width: 576px) {
-        .carousel-inner .carousel-item .row {
-            display: flex !important;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            gap: 0.5rem;
-        }
-        
-        .carousel-inner .carousel-item .row > [class*='col'] {
-            flex: 0 0 50% !important;
-            max-width: 50% !important;
-            scroll-snap-align: start;
-        }
-        
-        .product-card {
-            margin: 0 5px;
-        }
-        
-        .carousel-control-prev,
-        .carousel-control-next {
-            display: none;
-        }
-        
-        .carousel-indicators {
-            bottom: -25px;
-        }
+    .carousel-inner .carousel-item .row {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 0.5rem;
+    }
+
+    .carousel-inner .carousel-item .row > [class*='col'] {
+      flex: 0 0 50% !important;
+      max-width: 50% !important;
+      scroll-snap-align: start;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      display: none !important;
     }
 }
 /* ========================= */
