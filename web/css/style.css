@@ -668,7 +668,13 @@ body.productos-body {
       height: 30px;
       top: 40%;
     }
+    .carousel-control-prev {
+      left: 10px; /* mueve el botón hacia el centro */
+    }
 
+    .carousel-control-next {
+      right: 10px; /* mueve el botón hacia el centro */
+    }
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
       width: 18px;
