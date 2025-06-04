@@ -79,42 +79,48 @@
 </div>
 
 <script>
-fetch("/api/productos/promociones")
-  .then(res => res.json())
-  .then(data => {
-    const productosConPromo = data.productos.filter(p => p.promocion && p.disponible);
-    const carouselInner = document.getElementById("ofertas-carousel-inner");
+    fetch("/api/productos/promociones")
+      .then(res => res.json())
+      .then(data => {
+        const productosConPromo = data.productos.filter(p => p.promocion && p.disponible);
+        const carouselInner = document.getElementById("ofertas-carousel-inner");
 
-    for (let i = 0; i < productosConPromo.length; i += 3) {
-      const grupo = productosConPromo.slice(i, i + 3);
-      const item = document.createElement("div");
-      item.className = "carousel-item" + (i === 0 ? " active" : "");
+        // Detectar si estamos en móvil
+        const esMovil = window.innerWidth <= 576;
 
-      const row = document.createElement("div");
-      row.className = "row justify-content-center";
+        // Si es móvil, mostrar solo 2 productos por slide
+        const cantidadPorGrupo = esMovil ? 2 : 3;
 
-      grupo.forEach(prod => {
-        const col = document.createElement("div");
-        col.className = "col-6 col-md-4 mb-3";
+        for (let i = 0; i < productosConPromo.length; i += cantidadPorGrupo) {
+          const grupo = productosConPromo.slice(i, i + cantidadPorGrupo);
+          const item = document.createElement("div");
+          item.className = "carousel-item" + (i === 0 ? " active" : "");
 
-        col.innerHTML = `
-          <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
-            <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
-            <div class="card-body text-center">
-              <h5 class="card-title">${prod.nombre}</h5>
-              <p class="badge bg-success text-wrap mb-2">${prod.promocion}</p>
-              <p class="card-text"><strong>${prod.cantidad}</strong></p>
-              <p class="card-text"><strong>${prod.precio} Bs</strong></p>
-            </div>
-          </div>
-        `;
-        row.appendChild(col);
+          const row = document.createElement("div");
+          row.className = "row justify-content-center";
+
+          grupo.forEach(prod => {
+            const col = document.createElement("div");
+            col.className = "col-6 col-md-4 mb-3";
+
+            col.innerHTML = `
+              <div class="card h-100" onclick="abrirModalCantidad(${prod.id}, '${prod.nombre}', ${prod.precio}, '${prod.sabor || "-"}', \`${prod.promocion || ""}\`)">
+                <img src="${prod.imagen_url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${prod.nombre}">
+                <div class="card-body text-center">
+                  <h5 class="card-title">${prod.nombre}</h5>
+                  <p class="badge bg-success text-wrap mb-2">${prod.promocion}</p>
+                  <p class="card-text"><strong>${prod.cantidad}</strong></p>
+                  <p class="card-text"><strong>${prod.precio} Bs</strong></p>
+                </div>
+              </div>
+            `;
+            row.appendChild(col);
+          });
+
+          item.appendChild(row);
+          carouselInner.appendChild(item);
+        }
       });
-
-      item.appendChild(row);
-      carouselInner.appendChild(item);
-    }
-  });
 </script>
 <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
   <div class="modal-dialog">
