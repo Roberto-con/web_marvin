@@ -466,6 +466,13 @@ body.productos-body {
 .carousel-control-next-icon {
   transform: rotate(180deg); /* reutiliza la misma flecha para el siguiente */
 }
+.carousel-control-prev {
+  left: -3rem; /* mueve más a la izquierda */
+}
+
+.carousel-control-next {
+  right: -3rem; /* mueve más a la derecha */
+}
 @media (max-width: 576px) {
     .card {
         height: auto;
