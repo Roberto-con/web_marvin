@@ -468,11 +468,11 @@ body.productos-body {
   transform: rotate(180deg); /* reutiliza la misma flecha para el siguiente */
 }
 .carousel-control-prev {
-  left: -4rem; /* mueve más a la izquierda */
+  left: -3rem; /* mueve más a la izquierda */
 }
 
 .carousel-control-next {
-  right: -4rem; /* mueve más a la derecha */
+  right: -3rem; /* mueve más a la derecha */
 }
 .carousel-control-prev,
 .carousel-control-next {
