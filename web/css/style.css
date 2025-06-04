@@ -647,34 +647,32 @@ body.productos-body {
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-    /* carrusel version movil*/
-    @media (max-width: 576px) {
-      .carousel-inner .carousel-item > .row {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-      }
+    /* carrusel versión móvil */
+    .carousel-inner .carousel-item > .row {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
 
-      .carousel-inner .carousel-item > .row > .col {
-        flex: 0 0 50% !important; /* 👈 Fuerza el 50% horizontal */
-        max-width: 50% !important;
-        scroll-snap-align: start;
-      }
+    .carousel-inner .carousel-item > .row > .col {
+      flex: 0 0 50% !important;
+      max-width: 50% !important;
+      scroll-snap-align: start;
+    }
 
-      .product-card {
-        margin: 0 5px; /* Espaciado lateral entre tarjetas */
-      }
+    .product-card {
+      margin: 0 5px;
+    }
 
-      .carousel-control-prev,
-      .carousel-control-next {
-        display: none; /* Ocultar flechas en móvil */
-      }
+    .carousel-control-prev,
+    .carousel-control-next {
+      display: none;
+    }
 
-      .carousel-indicators {
-        bottom: -25px;
-      }
+    .carousel-indicators {
+      bottom: -25px;
     }
 }
 /* ========================= */
