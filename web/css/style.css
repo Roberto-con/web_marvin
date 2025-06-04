@@ -669,11 +669,11 @@ body.productos-body {
       top: 40%;
     }
     .carousel-control-prev {
-      left: 10px; /* mueve el botón hacia el centro */
+      left: 7px; /* mueve el botón hacia el centro */
     }
 
     .carousel-control-next {
-      right: 10px; /* mueve el botón hacia el centro */
+      right: 7px; /* mueve el botón hacia el centro */
     }
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
