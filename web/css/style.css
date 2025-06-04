@@ -451,6 +451,7 @@ body.productos-body {
   transform: scale(1.02);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+/*estilos y diseños del carrusel/iconos*/
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   background-image: none; /* quitar ícono predeterminado */
@@ -472,6 +473,18 @@ body.productos-body {
 
 .carousel-control-next {
   right: -7rem; /* mueve más a la derecha */
+}
+.carousel-control-prev,
+.carousel-control-next {
+  width: 3.5rem;  /* controla el área horizontal clickeable */
+  height: 3.5rem; /* controla el área vertical */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent; /* opcional, sin fondo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 @media (max-width: 576px) {
     .card {
