@@ -662,11 +662,6 @@ body.productos-body {
       max-width: 50% !important;
       scroll-snap-align: start;
     }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-      display: none !important;
-    }
 }
 /* ========================= */
 /* 🖨️ Estilos para impresión */
