@@ -453,3 +453,33 @@ function eliminarItemCarrito(index) {
     guardarCarrito(carrito);
     location.reload(); // recarga para actualizar tabla y contador
 }
+
+window.exportarExcel = async function () {
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/exportar_productos", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            alert(error.mensaje || "Error al exportar");
+            return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "productos_delizia.xlsx";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    } catch (err) {
+        alert("Error de conexión con el servidor.");
+    }
+}
